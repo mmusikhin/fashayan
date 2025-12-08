@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <title>Защитникам земли русской — Музей Романа Фашаяна</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Forum&family=Manrope:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body class="page-exhibition">
+
+    <div id="preloader" class="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-title">ЗАЩИТНИКАМ ЗЕМЛИ РУССКОЙ</div>
+      <div class="preloader-bar">
+        <div class="preloader-bar-fill"></div>
+      </div>
+      <div class="preloader-perc" id="preloader-perc">0%</div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="logo">МУЗЕЙ РОМАНА ФАШАЯНА</div>
+    <nav class="main-nav">
+      <a href="index.html" class="nav-link">Главная</a>
+      <a href="gallery.html" class="nav-link">Галерея</a>
+      <a href="sculptor.html" class="nav-link">О скульпторе</a>
+      <a href="process.html" class="nav-link">Процесс создания</a>
+    </nav>
+  </header>
+
+  <!-- ВИДИМАЯ И РАБОЧАЯ КНОПКА -->
+  <button id="btn-exit-exhibition" class="btn-outline">
+    Вернуться в галерею
+  </button>
+
+  <div id="exhibition-container"></div>
+
+  <div id="sculpture-info" class="sculpture-info">
+    <h2 id="info-title" class="info-title"></h2>
+    <p id="info-text" class="info-text"></p>
+    <button id="btn-exit-view" class="btn-outline">Назад к выставке</button>
+  </div>
+
+  <script type="module" src="../js/exhibition.js"></script>
+</body>
+
+</html>

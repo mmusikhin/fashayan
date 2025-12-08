@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <title>Галерея — Музей Романа Фашаяна</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Forum&family=Manrope:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body class="page-gallery">
+
+  <div id="preloader" class="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-title">ГАЛЕРЕЯ</div>
+      <div class="preloader-bar">
+        <div class="preloader-bar-fill"></div>
+      </div>
+      <div class="preloader-perc" id="preloader-perc">0%</div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="logo">
+      МУЗЕЙ РОМАНА ФАШАЯНА
+    </div>
+    <nav class="main-nav">
+      <a href="index.html" class="nav-link">Главная</a>
+      <a href="gallery.html" class="nav-link active">Галерея</a>
+      <a href="sculptor.html" class="nav-link">О скульпторе</a>
+      <a href="process.html" class="nav-link">Процесс создания</a>
+    </nav>
+  </header>
+
+  <div id="three-container"></div>
+
+  <main>
+    <section class="content-section" style="margin-top: 40px;">
+      <h1 class="section-title">Галерея работ</h1>
+
+      <div class="exhibition-card">
+        <h2 class="grid-title">Защитникам земли русской</h2>
+        <p class="grid-text">
+          Монументальная серия скульптур, посвященная героям и защитникам Отечества.
+          Коллекция представляет собой уникальное сочетание традиционной русской
+          скульптурной школы и современных художественных решений.
+        </p>
+        <a href="exhibition.html" class="btn-outline btn-inline">Посмотреть выставку в 3D</a>
+      </div>
+
+      <div class="exhibition-card">
+        <h2 class="grid-title">Все работы</h2>
+        <p class="grid-text">
+          Полное собрание произведений Романа Фашаяна. Раздел находится в разработке
+          и будет содержать все работы скульптора, организованные по хронологии и темам.
+        </p>
+        <button class="btn-outline btn-inline" disabled>Скоро будет доступно</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© Музей Романа Фашаяна</span>
+      <span>Цифровая галерея скульптуры</span>
+    </div>
+  </footer>
+
+  <script type="module" src="../js/gallery.js"></script>
+</body>
+
+</html>
