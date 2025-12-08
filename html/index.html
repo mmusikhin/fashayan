@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <title>Музей Романа Фашаяна</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://fonts.googleapis.com/css2?family=Forum&family=Manrope:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body class="page-home">
+
+  <div id="preloader" class="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-title">МУЗЕЙ РОМАНА ФАШАЯНА</div>
+      <div class="preloader-bar">
+        <div class="preloader-bar-fill"></div>
+      </div>
+      <div class="preloader-perc" id="preloader-perc">0%</div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="logo">
+      МУЗЕЙ РОМАНА ФАШАЯНА
+    </div>
+    <nav class="main-nav">
+      <a href="index.html" class="nav-link active">Главная</a>
+      <a href="gallery.html" class="nav-link">Галерея</a>
+      <a href="sculptor.html" class="nav-link">О скульпторе</a>
+      <a href="process.html" class="nav-link">Процесс создания</a>
+    </nav>
+  </header>
+
+  <div id="three-container"></div>
+
+  <main>
+    <section class="hero">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="hero-fond">МУЗЕЙ</span>
+          <span class="hero-name">РОМАНА ФАШАЯНА</span>
+        </h1>
+        <p class="hero-subtitle">
+          Роман Олегович Фашаян —<br>
+          скульптор, заслуженный художник Российской Федерации
+        </p>
+        <button class="btn-outline" id="btn-3d">
+          Смотреть работы в 3D
+        </button>
+      </div>
+      <div class="hero-spacer"></div>
+    </section>
+
+    <section class="content-section">
+      <h2 class="section-title">
+        СОХРАНЕНИЕ НАСЛЕДИЯ. ЦИФРОВАЯ ГАЛЕРЕЯ. ДОСТУПНОЕ ИКУССТВО
+      </h2>
+      <p class="section-text">
+        Музей Романа Фашаяна создан для того, чтобы сохранить и представить публике творческое наследие мастера
+        в современном, интерактивном формате. Мы объединяем архивные материалы, биографию и трёхмерные модели
+        скульптур, позволяя каждому зрителю познакомиться с работами художника напрямую — без ограничений
+        времени и пространства.
+      </p>
+    </section>
+
+    <section class="content-section">
+      <h2 class="section-title">О СКУЛЬПТОРЕ</h2>
+      <p class="section-text">
+        Роман Олегович Фашаян — автор десятков монументальных и станковых работ, педагог,
+        заслуженный художник Россиийской Федерации. Его творчество соединяет академическую школу
+        и современный пластический язык, а работы находятся в частных коллекциях и государственных
+        собраниях России.
+      </p>
+      <button class="btn-outline btn-inline" id="btn-more-sculptor">
+        Подробнее о скульпторе
+      </button>
+    </section>
+
+    <section class="content-section section-grid">
+      <div class="grid-card">
+        <h3 class="grid-title">ГАЛЕРЕЯ</h3>
+        <p class="grid-text">
+          Подборка ключевых произведений мастера, представленных в удобном для просмотра формате.
+        </p>
+      </div>
+      <div class="grid-card">
+        <h3 class="grid-title">3D-МОДЕЛИ</h3>
+        <p class="grid-text">
+          Высокоточные трёхмерные сканы скульптур, которые можно рассматривать со всех ракурсов.
+        </p>
+      </div>
+      <div class="grid-card">
+        <h3 class="grid-title">ПРОЦЕСС СОЗДАНИЯ</h3>
+        <p class="grid-text">
+          Документация творческого пути: от эскиза и модели до готовой монументальной работы.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© Музей Романа Фашаяна</span>
+      <span>Цифровая галерея скульптуры</span>
+    </div>
+  </footer>
+
+  <script type="module" src="../js/main.js"></script>
+</body>
+
+</html>
