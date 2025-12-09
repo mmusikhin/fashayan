@@ -94,7 +94,7 @@ function init() {
 
   const loader = new GLTFLoader();
   loader.load(
-    '../assets/sculpt.glb',
+    'assets/sculpt.glb',
     (gltf) => {
       model = gltf.scene;
 
