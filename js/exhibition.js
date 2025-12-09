@@ -22,7 +22,7 @@ renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 // тонмаппинг и экспозиция, чтобы убрать засвет
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 0.003;
+//renderer.toneMappingExposure = 0.003;
 container.appendChild(renderer.domElement);
 
 const manager = new THREE.LoadingManager();
@@ -75,7 +75,7 @@ const sculpturesConfig = {
   KitelMesh: {
     title: 'Скульптура Kitel',
     text: 'Описание скульптуры Kitel.',
-    light: 'KSL2',
+    light: 'KSL',
     maxDeltaZ: Math.PI / 4 // ±45°
   }
 };
@@ -129,7 +129,7 @@ manager.onLoad = () => {
 
 // загрузка сцены
 loader.load(
-  '../assets/scene.glb',
+  'assets/scene.glb',
   gltf => {
     scene = gltf.scene;
 
