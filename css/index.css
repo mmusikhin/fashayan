@@ -1,0 +1,195 @@
+/* =========================
+   INDEX / HOME PAGE ONLY
+   ========================= */
+
+/* Preloader (есть только на index.html) */
+.preloader {
+  position: fixed;
+  inset: 0;
+  background: #050505;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: opacity 0.4s ease;
+}
+
+.preloader-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.preloader-inner {
+  width: min(420px, 80vw);
+}
+
+.preloader-title {
+  font-family: var(--font-title);
+  font-size: 24px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  font-weight: 400;
+}
+
+.preloader-bar {
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+
+.preloader-bar-fill {
+  width: 0%;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.8);
+  transition: width 0.15s ease-out;
+}
+
+.preloader-perc {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--muted-text);
+}
+
+/* Hero (index) */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 40px;
+  align-items: center;
+  min-height: calc(100vh - var(--header-height) - 40px);
+  position: relative;
+}
+
+.hero-text {
+  max-width: 600px;
+  z-index: 6;
+}
+
+.hero-title {
+  font-family: var(--font-title);
+  line-height: 1.05;
+  letter-spacing: 0.07em;
+  margin: 0 0 20px;
+  white-space: normal;
+  font-weight: 400;
+}
+
+.hero-fond {
+  display: block;
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+.hero-name {
+  display: block;
+  font-size: 64px;
+  text-transform: uppercase;
+}
+
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: 20px;
+  line-height: 1.45;
+  color: var(--muted-text);
+  margin: 0 0 28px;
+  max-width: 600px;
+}
+
+/* Index grid (три карточки) */
+.section-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  max-width: 100%;
+  position: relative;
+  z-index: 6;
+  padding: 0 0 0 0;
+}
+
+.grid-card {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  padding: 20px 18px;
+  background: rgba(5, 5, 5, 0.82);
+  position: relative;
+  z-index: 6;
+}
+
+.grid-title {
+  font-family: var(--font-title);
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+  font-weight: 400;
+}
+
+.grid-text {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted-text);
+  margin: 0;
+}
+
+/* 3D canvas container (index only) */
+#three-container {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;     /* важно */
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.95;
+}
+
+
+
+/* =========================
+   INDEX RESPONSIVE ONLY
+   ========================= */
+
+@media (max-width: 1024px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  #three-container {
+    width: 50vw;
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-name {
+    font-size: 40px;
+  }
+
+  .hero-fond {
+    font-size: 18px;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+  }
+
+  .section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #three-container {
+    position: fixed;
+    top: auto;
+    bottom: 40px;
+    right: -40px;
+    width: 60vw;
+    opacity: 0.6;
+  }
+}

@@ -1,0 +1,233 @@
+/* =========================
+   EXHIBITION PAGE ONLY
+   ========================= */
+
+/* EXHIBITION — ПОЛНЫЙ ЭКРАН + КНОПКА */
+.page-exhibition {
+  padding: 0 !important;
+  margin: 0;
+}
+
+.page-exhibition main {
+  padding: 0;
+  margin: 0;
+  max-width: none;
+}
+
+#exhibition-container {
+  position: fixed !important;
+  top: var(--header-height);
+  left: 0;
+  width: 100vw !important;
+  height: calc(100vh - var(--header-height)) !important;
+  z-index: 1;
+}
+
+/* =========================
+   SIDE DIM MASK (left/right)
+   ========================= */
+.focus-mask {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 40;
+
+  /* Затемнение именно слева и справа, центр чище */
+  background:
+    linear-gradient(to right,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.55) 18%,
+      rgba(0, 0, 0, 0.00) 40%,
+      rgba(0, 0, 0, 0.00) 60%,
+      rgba(0, 0, 0, 0.55) 82%,
+      rgba(0, 0, 0, 0.92) 100%);
+
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease;
+}
+
+.focus-mask.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Кнопка возврата — всегда видна, стандартный hover */
+#btn-exit-exhibition {
+  position: fixed;
+  top: 90px;
+  left: 40px;
+  z-index: 200;
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-color);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+#btn-exit-exhibition:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* =========================
+   LEFT INFO (view mode)
+   ========================= */
+#sculpture-info {
+  position: fixed;
+  top: calc(var(--header-height) + (100vh - var(--header-height)) / 2);
+  left: 40px;
+  transform: translateY(-50%);
+  max-width: 460px;
+
+  background: rgba(5, 5, 5, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 28px;
+  backdrop-filter: blur(12px);
+  z-index: 50;
+
+  display: none;
+}
+
+/* =========================
+   RIGHT HINTS (view mode)
+   ========================= */
+.view-hints {
+  position: fixed;
+  top: calc(var(--header-height) + (100vh - var(--header-height)) / 2);
+  right: 120px;
+  transform: translateY(-50%);
+  z-index: 60;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.view-hints.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.view-hint-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px 14px;
+  max-width: 320px;
+
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.4;
+  border-radius: 14px;
+}
+
+.view-hint-icon {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.view-hint-text {
+  white-space: nowrap;
+  opacity: 0.95;
+}
+
+/* =========================
+   Footer fixed (only exhibition)
+   ========================= */
+.site-footer {
+  position: fixed !important;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 20px 40px 24px;
+  background: rgba(5, 5, 5, 0.82);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 14px;
+  color: var(--muted-text);
+}
+
+/* Подсказка при наведении на скульптуру */
+.hover-hint {
+  position: fixed;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 16px;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 200;
+  white-space: nowrap;
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.15s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #btn-exit-exhibition {
+    top: 80px;
+    left: 16px;
+    font-size: 14px;
+    padding: 10px 18px;
+  }
+
+  #sculpture-info {
+    left: 16px;
+    right: 16px;
+    top: auto;
+    bottom: 16px;
+    transform: none;
+    max-width: none;
+  }
+
+  .view-hints {
+    left: 16px;
+    right: 16px;
+    top: auto;
+    bottom: 170px;
+    transform: none;
+    align-items: flex-start;
+  }
+
+  .site-footer {
+    padding: 16px 20px;
+  }
+}
