@@ -60,7 +60,6 @@ function init() {
   renderer.toneMappingExposure = 1; 
   container.appendChild(renderer.domElement);
 
-  // Базовый общий свет 
   const ambient = new THREE.AmbientLight(0xffffff, 5); 
   scene.add(ambient);
 
@@ -68,12 +67,10 @@ function init() {
   hemiLight.position.set(0, 4, 4);
   scene.add(hemiLight);
 
-  // Контровой свет (rim) — усилили и чуть подвинули
   const rimLight = new THREE.DirectionalLight(0xffffff, 1.6); 
   rimLight.position.set(-4.5, 4.2, -2.0);
   scene.add(rimLight);
 
-  // Свет, который следует за “плавным” курсором из cursor.js
   cursorLight = new THREE.PointLight(0xffffff, 100.0, 3.0, 1.2); 
   cursorLight.position.set(0, 1.6, 2.8);
   scene.add(cursorLight);
@@ -90,7 +87,7 @@ function init() {
       const center = new THREE.Vector3();
       box.getCenter(center);
 
-      const desiredSize = 2;
+      const desiredSize = 2.6;
       const scale = desiredSize / Math.max(size.x, size.y, size.z || 1);
       model.scale.setScalar(scale);
 
@@ -98,7 +95,7 @@ function init() {
       model.position.y += 1.2;
       baseY = model.position.y;
 
-      model.position.x += 1.4;
+    //  model.position.x += 1.4;
       model.rotation.y = START_ROTATION_Y;
 
       model.traverse((obj) => {

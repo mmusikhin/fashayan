@@ -90,13 +90,31 @@
   text-transform: uppercase;
 }
 
-.hero-subtitle {
-  font-family: var(--font-body);
-  font-size: 20px;
-  line-height: 1.45;
-  color: var(--muted-text);
-  margin: 0 0 28px;
-  max-width: 600px;
+.hero-photo-wrap {
+  position: relative;
+  width: 100%;
+  min-height: 560px;
+  border-radius: 24px;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.hero-photo-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0) 70%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-photo {
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+  display: block;
+  object-fit: cover;
+  object-position: center;
 }
 
 /* Index grid (три карточки) */
@@ -136,24 +154,42 @@
   margin: 0;
 }
 
-/* 3D canvas container (index only) */
 #three-container {
-  position: fixed;
-  top: var(--header-height);
-  left: 0;
+  position: absolute;
+  top: calc(100vh + 80px);
   right: 0;
-  bottom: 0;
-  width: auto;     /* важно */
+  width: min(42vw, 560px);
+  height: 78vh;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
   opacity: 0.95;
 }
 
+.hero-photo-wrap {
+  position: relative;
+  width: 100%;
+  height: 560px;
+  border-radius: 24px;
+  overflow: hidden;
+}
 
+.hero-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-/* =========================
-   INDEX RESPONSIVE ONLY
-   ========================= */
+.hero-photo-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0,0,0,0.85) 0%,
+    rgba(0,0,0,0.45) 35%,
+    rgba(0,0,0,0) 70%
+  );
+}
 
 @media (max-width: 1024px) {
   .hero {
@@ -161,10 +197,13 @@
     min-height: auto;
   }
 
-  #three-container {
-    width: 50vw;
-    opacity: 0.7;
-  }
+#three-container {
+  top: calc(100vh + 120px);
+  right: 0;
+  width: min(46vw, 460px);
+  height: 64vh;
+  opacity: 0.8;
+}
 }
 
 @media (max-width: 768px) {
@@ -184,12 +223,22 @@
     grid-template-columns: 1fr;
   }
 
-  #three-container {
-    position: fixed;
-    top: auto;
-    bottom: 40px;
-    right: -40px;
-    width: 60vw;
-    opacity: 0.6;
+  .hero-photo-wrap,
+  .hero-photo {
+    min-height: 420px;
   }
+
+   .hero-photo-wrap,
+  .hero-photo {
+    min-height: 320px;
+  }
+
+#three-container {
+  position: absolute;
+  top: calc(100vh + 140px);
+  right: -10px;
+  width: 72vw;
+  height: 52vh;
+  opacity: 0.65;
+}
 }

@@ -127,7 +127,7 @@ if (!viewerEl) {
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.95));
 
-  const hemi = new THREE.HemisphereLight(0xffffff, 0x111111, 1.35);
+  const hemi = new THREE.HemisphereLight(0xffffff, 0x111111, 11.35);
   scene.add(hemi);
 
   const key = new THREE.DirectionalLight(0xffffff, 2.2);
