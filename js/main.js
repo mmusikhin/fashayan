@@ -1,9 +1,9 @@
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-const container = document.getElementById('three-container');
+const container = document.getElementById("three-container");
 
-const START_ROTATION_Y = Math.PI * 0.1; 
+const START_ROTATION_Y = Math.PI * 0.1;
 
 let scene, camera, renderer;
 let model = null;
@@ -14,9 +14,9 @@ let baseY = 0;
 let cursorLight = null;
 let spotLight = null;
 
-const preloader = document.getElementById('preloader');
-const preloaderFill = preloader?.querySelector('.preloader-bar-fill');
-const preloaderPerc = document.getElementById('preloader-perc');
+const preloader = document.getElementById("preloader");
+const preloaderFill = preloader?.querySelector(".preloader-bar-fill");
+const preloaderPerc = document.getElementById("preloader-perc");
 
 function setLoadingProgress(progress) {
   if (!preloader) return;
@@ -28,9 +28,10 @@ function setLoadingProgress(progress) {
 
 function hidePreloader() {
   if (!preloader) return;
-  preloader.classList.add('preloader-hidden');
+  preloader.classList.add("preloader-hidden");
   setTimeout(() => {
-    if (preloader && preloader.parentNode) preloader.parentNode.removeChild(preloader);
+    if (preloader && preloader.parentNode)
+      preloader.parentNode.removeChild(preloader);
   }, 500);
 }
 
@@ -47,7 +48,7 @@ function init() {
   scene.background = null;
 
   const width = container.clientWidth || window.innerWidth * 0.4;
-  const height = container.clientHeight || (window.innerHeight - 72);
+  const height = container.clientHeight || window.innerHeight - 72;
 
   camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 100);
   camera.position.set(0, 1.2, 4);
@@ -57,27 +58,27 @@ function init() {
   renderer.setSize(width, height);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1; 
+  renderer.toneMappingExposure = 1;
   container.appendChild(renderer.domElement);
 
-  const ambient = new THREE.AmbientLight(0xffffff, 5); 
+  const ambient = new THREE.AmbientLight(0xffffff, 5);
   scene.add(ambient);
 
   const hemiLight = new THREE.HemisphereLight(0xf5f5f5, 0x020202, 12);
   hemiLight.position.set(0, 4, 4);
   scene.add(hemiLight);
 
-  const rimLight = new THREE.DirectionalLight(0xffffff, 1.6); 
+  const rimLight = new THREE.DirectionalLight(0xffffff, 1.6);
   rimLight.position.set(-4.5, 4.2, -2.0);
   scene.add(rimLight);
 
-  cursorLight = new THREE.PointLight(0xffffff, 100.0, 3.0, 1.2); 
+  cursorLight = new THREE.PointLight(0xffffff, 100.0, 3.0, 1.2);
   cursorLight.position.set(0, 1.6, 2.8);
   scene.add(cursorLight);
 
   const loader = new GLTFLoader();
   loader.load(
-    'assets/children.glb',
+    "assets/children.glb",
     (gltf) => {
       model = gltf.scene;
 
@@ -95,7 +96,6 @@ function init() {
       model.position.y += 1.2;
       baseY = model.position.y;
 
-    //  model.position.x += 1.4;
       model.rotation.y = START_ROTATION_Y;
 
       model.traverse((obj) => {
@@ -130,17 +130,25 @@ function init() {
     },
     () => {
       hidePreloader();
-    }
+    },
   );
 
-  window.addEventListener('scroll', onScroll);
-  window.addEventListener('resize', onWindowResize);
+  window.addEventListener("scroll", onScroll);
+  window.addEventListener("resize", onWindowResize);
 
-  const btn3d = document.getElementById('btn-3d');
-  if (btn3d) btn3d.addEventListener('click', () => (window.location.href = 'html/gallery.html'));
+  const btn3d = document.getElementById("btn-3d");
+  if (btn3d)
+    btn3d.addEventListener(
+      "click",
+      () => (window.location.href = "html/gallery.html"),
+    );
 
-  const btnMore = document.getElementById('btn-more-sculptor');
-  if (btnMore) btnMore.addEventListener('click', () => (window.location.href = 'html/sculptor.html'));
+  const btnMore = document.getElementById("btn-more-sculptor");
+  if (btnMore)
+    btnMore.addEventListener(
+      "click",
+      () => (window.location.href = "html/sculptor.html"),
+    );
 }
 
 function onScroll() {
@@ -152,19 +160,18 @@ function onWindowResize() {
   if (!renderer || !camera || !container) return;
 
   const width = container.clientWidth || window.innerWidth * 0.4;
-  const height = container.clientHeight || (window.innerHeight - 72);
+  const height = container.clientHeight || window.innerHeight - 72;
 
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
   renderer.setSize(width, height);
 }
 
-// Берём координаты из cursor.js (window.__cursorLight), и только ими двигаем THREE PointLight
 function updateCursorAndLight() {
   if (!renderer || !camera || !cursorLight) return;
 
   const api = window.__cursorLight;
-  if (!api) return; // если cursor.js не подключён — просто не двигаем свет (без ошибок)
+  if (!api) return;
 
   const cursorX = api.x;
   const cursorY = api.y;
@@ -177,7 +184,7 @@ function updateCursorAndLight() {
   ndc.unproject(camera);
   const dir = ndc.sub(camera.position).normalize();
 
-  const distance = 1.6; // было 2.3 — ближе к модели, свет от курсора ощущается сильнее
+  const distance = 1.6;
   cursorLight.position.copy(camera.position).add(dir.multiplyScalar(distance));
 }
 

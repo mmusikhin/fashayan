@@ -1,10 +1,5 @@
-/* =========================
-   SCULPTURE VIEW PAGE ONLY
-   (стилизация как на exhibition)
-   ========================= */
-
-/* фиксируем экран, без скролла */
-html, body {
+html,
+body {
   height: 100%;
   overflow: hidden;
 }
@@ -21,7 +16,6 @@ body.page-sculpture {
   max-width: none;
 }
 
-/* viewer — на весь экран ПОД хедером */
 .viewer-wrap {
   position: fixed;
   top: var(--header-height);
@@ -38,9 +32,6 @@ body.page-sculpture {
   height: calc(100vh - var(--header-height));
 }
 
-/* =========================
-   SIDE DIM MASK (left/right)
-   ========================= */
 .focus-mask {
   position: fixed;
   top: var(--header-height);
@@ -50,14 +41,15 @@ body.page-sculpture {
   pointer-events: none;
   z-index: 40;
 
-  background:
-    linear-gradient(to right,
-      rgba(0, 0, 0, 0.92) 0%,
-      rgba(0, 0, 0, 0.55) 18%,
-      rgba(0, 0, 0, 0.00) 40%,
-      rgba(0, 0, 0, 0.00) 60%,
-      rgba(0, 0, 0, 0.55) 82%,
-      rgba(0, 0, 0, 0.92) 100%);
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.92) 0%,
+    rgba(0, 0, 0, 0.55) 18%,
+    rgba(0, 0, 0, 0) 40%,
+    rgba(0, 0, 0, 0) 60%,
+    rgba(0, 0, 0, 0.55) 82%,
+    rgba(0, 0, 0, 0.92) 100%
+  );
 
   opacity: 0;
   visibility: hidden;
@@ -69,9 +61,6 @@ body.page-sculpture {
   visibility: visible;
 }
 
-/* =========================
-   Back button (top-left)
-   ========================= */
 #btn-back {
   position: fixed;
   top: 90px;
@@ -87,7 +76,10 @@ body.page-sculpture {
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 #btn-back:hover {
@@ -95,9 +87,6 @@ body.page-sculpture {
   color: #000000;
 }
 
-/* =========================
-   LEFT INFO (interaction mode)
-   ========================= */
 #sculpture-info {
   position: fixed;
   top: calc(var(--header-height) + (100vh - var(--header-height)) / 2);
@@ -112,10 +101,9 @@ body.page-sculpture {
   backdrop-filter: blur(12px);
   z-index: 50;
 
-  display: none; /* включаем через JS при взаимодействии */
+  display: none;
 }
 
-/* крупнее заголовок как просил */
 #info-title.info-title {
   margin: 0;
   font-family: var(--font-title);
@@ -133,9 +121,6 @@ body.page-sculpture {
   color: rgba(255, 255, 255, 0.78);
 }
 
-/* =========================
-   RIGHT HINTS (interaction mode)
-   ========================= */
 .view-hints {
   position: fixed;
   top: calc(var(--header-height) + (100vh - var(--header-height)) / 2);
@@ -191,7 +176,6 @@ body.page-sculpture {
   opacity: 0.95;
 }
 
-/* ошибка поверх всего */
 .viewer-error {
   position: fixed;
   inset: 0;
@@ -205,7 +189,6 @@ body.page-sculpture {
   z-index: 90;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   #btn-back {
     top: 80px;
@@ -232,7 +215,10 @@ body.page-sculpture {
     align-items: flex-start;
   }
 
-  #info-title.info-title { font-size: 24px; }
-  #info-text.info-text { font-size: 16px; }
+  #info-title.info-title {
+    font-size: 24px;
+  }
+  #info-text.info-text {
+    font-size: 16px;
+  }
 }
-

@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-
 document.getElementById("btn-exit-exhibition").addEventListener("click", () => {
   window.location.href = "gallery.html";
 });
@@ -18,8 +17,6 @@ const infoTitle = document.getElementById("info-title");
 const infoText = document.getElementById("info-text");
 const btnExitView = document.getElementById("btn-exit-view");
 
-
-
 const focusMaskEl = document.getElementById("focus-mask");
 const viewHintsEl = document.getElementById("view-hints");
 
@@ -27,7 +24,6 @@ function setViewUI(isOn) {
   if (focusMaskEl) focusMaskEl.classList.toggle("is-visible", isOn);
   if (viewHintsEl) viewHintsEl.classList.toggle("is-visible", isOn);
 }
-
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio || 1);
@@ -58,17 +54,15 @@ const camAnim = {
   duration: 1.2,
 };
 
-
 const viewZoom = {
-  target: new THREE.Vector3(), 
-  dir: new THREE.Vector3(), 
+  target: new THREE.Vector3(),
+  dir: new THREE.Vector3(),
   distance: 0,
   min: 0,
-  max: 0, 
-  speed: 0.0012, 
-  active: false, 
+  max: 0,
+  speed: 0.0012,
+  active: false,
 };
-
 
 const sculpturesConfig = {
   Man1Mesh: {
@@ -103,8 +97,13 @@ const sculpturesConfig = {
     light: "M3SPL",
     maxDeltaZ: Infinity,
   },
+  PressMesh: {
+    title: "Журналистам",
+    text: "Скульптурная композиция, посвящённая профессии свидетеля и посредника. Работа говорит о личной ответственности за слово и о хрупком балансе между фактом, памятью и временем.",
+    light: "M0SPL",
+    maxDeltaZ: Infinity,
+  },
 };
-
 
 const sculptures = {};
 
@@ -140,7 +139,6 @@ hoverHint.style.pointerEvents = "none";
 hoverHint.style.display = "none";
 document.body.appendChild(hoverHint);
 
-
 function findSculptureKeyByObject(obj) {
   let cur = obj;
   while (cur) {
@@ -161,13 +159,11 @@ function getSculptureWorldAnchor(key) {
   return center;
 }
 
-
 if (preloader) {
   preloader.style.display = "flex";
   if (preloaderFill) preloaderFill.style.width = "0%";
   if (preloaderPerc) preloaderPerc.textContent = "0%";
 }
-
 
 manager.onProgress = (_url, loaded, total) => {
   const p = total ? (loaded / total) * 100 : 0;
@@ -179,12 +175,10 @@ manager.onLoad = () => {
   if (preloader) preloader.style.display = "none";
 };
 
-
 loader.load(
   "../assets/scene.glb",
   (gltf) => {
     scene = gltf.scene;
-
 
     let gltfCam = scene.getObjectByName("MainCamera");
     if (
@@ -216,7 +210,6 @@ loader.load(
     mainCamPos.copy(camera.position);
     mainCamQuat.copy(camera.quaternion);
 
-   
     Object.keys(sculpturesConfig).forEach((key) => {
       const mesh = scene.getObjectByName(key);
       if (!mesh) return;
@@ -246,7 +239,6 @@ loader.load(
   },
 );
 
-
 function startCameraAnimation(toPos, toQuat, duration = 1.2) {
   if (!camera) return;
   camAnim.active = true;
@@ -261,12 +253,11 @@ function startCameraAnimation(toPos, toQuat, duration = 1.2) {
 function updateCameraAnimation(time) {
   if (!camAnim.active || !camera) return;
   const t = Math.min((time - camAnim.start) / (camAnim.duration * 1000), 1);
-  const k = t * t * (3 - 2 * t); 
+  const k = t * t * (3 - 2 * t);
   camera.position.lerpVectors(camAnim.fromPos, camAnim.toPos, k);
   camera.quaternion.slerpQuaternions(camAnim.fromQuat, camAnim.toQuat, k);
   if (t >= 1) camAnim.active = false;
 }
-
 
 function startRotationReset(key) {
   const obj = sculptures[key];
@@ -301,7 +292,6 @@ function updateRotationAnim(time) {
   }
 }
 
-
 function setHover(key) {
   if (hoveredKey === key || isViewMode) return;
   hoveredKey = key;
@@ -333,7 +323,6 @@ function setHover(key) {
   hoverHint.style.display = "block";
 }
 
-
 function enterViewMode(key) {
   const obj = sculptures[key];
   if (!obj || !camera) return;
@@ -343,12 +332,9 @@ function enterViewMode(key) {
   document.body.classList.add("view-mode");
   hoverHint.style.display = "none";
 
-
   setViewUI(true);
 
-
   rotationInertia.velocity = 0;
-
 
   const box = new THREE.Box3().setFromObject(obj.mesh);
   const center = new THREE.Vector3();
@@ -366,24 +352,21 @@ function enterViewMode(key) {
   m.lookAt(targetPos, center, camera.up);
   const targetQuat = new THREE.Quaternion().setFromRotationMatrix(m);
 
-
   viewZoom.target.copy(center);
   viewZoom.dir.copy(
     new THREE.Vector3().subVectors(targetPos, center).normalize(),
-  ); 
+  );
   viewZoom.distance = targetPos.distanceTo(center);
-  viewZoom.min = Math.max(radius * 0.3, 0.12); 
+  viewZoom.min = Math.max(radius * 0.3, 0.12);
   viewZoom.max = Math.max(radius * 6.0, viewZoom.distance * 2.5);
   viewZoom.active = true;
 
   startCameraAnimation(targetPos, targetQuat, 1.3);
 
- 
   infoTitle.textContent = obj.config.title;
   infoText.textContent = obj.config.text;
   infoPanel.style.display = "block";
 }
-
 
 function exitViewMode() {
   if (!isViewMode || !camera) return;
@@ -396,20 +379,15 @@ function exitViewMode() {
   infoPanel.style.display = "none";
   hoverHint.style.display = "none";
 
-
   setViewUI(false);
 
-
   viewZoom.active = false;
-
 
   Object.values(sculptures).forEach((obj) => {
     if (obj.light) obj.light.intensity = 0;
   });
 
-
   rotationInertia.velocity = 0;
-
 
   if (keyToReset && sculptures[keyToReset]) {
     startRotationReset(keyToReset);
@@ -417,7 +395,6 @@ function exitViewMode() {
 
   startCameraAnimation(mainCamPos, mainCamQuat, 1.3);
 }
-
 
 function applyAngleForActive(angle) {
   if (!activeKey) return;
@@ -472,33 +449,27 @@ function updateInertia() {
 function onWheel(e) {
   if (!isViewMode || !viewZoom.active || !camera) return;
 
-
   e.preventDefault();
-
 
   if (camAnim.active) return;
 
   const dy = e.deltaY || 0;
 
- 
   const factor = Math.exp(dy * viewZoom.speed);
   viewZoom.distance *= factor;
 
   if (viewZoom.distance < viewZoom.min) viewZoom.distance = viewZoom.min;
   if (viewZoom.distance > viewZoom.max) viewZoom.distance = viewZoom.max;
 
-
   const newPos = viewZoom.target
     .clone()
     .add(viewZoom.dir.clone().multiplyScalar(viewZoom.distance));
   camera.position.copy(newPos);
 
-
   const m = new THREE.Matrix4();
   m.lookAt(camera.position, viewZoom.target, camera.up);
   camera.quaternion.setFromRotationMatrix(m);
 }
-
 
 function onPointerMove(e) {
   if (!camera || !scene) return;

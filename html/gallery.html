@@ -1,134 +1,188 @@
 <!doctype html>
 <html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Галерея — Музей Романа Фашаяна</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Forum&family=Manrope:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
 
-<head>
-  <meta charset="utf-8">
-  <title>Галерея — Музей Романа Фашаяна</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Forum&family=Manrope:wght@400;500;600&display=swap"
-    rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/gallery.css" />
+  </head>
 
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/gallery.css">
-</head>
+  <body class="page-gallery">
+    <header class="site-header">
+      <div class="logo">МУЗЕЙ РОМАНА ФАШАЯНА</div>
+      <nav class="main-nav">
+        <a href="../index.html" class="nav-link">Главная</a>
+        <a href="gallery.html" class="nav-link active">Галерея</a>
+        <a href="sculptor.html" class="nav-link">Биография</a>
+      </nav>
+    </header>
 
-<body class="page-gallery">
+    <div class="cursor-light" id="cursorLight"></div>
 
-  <header class="site-header">
-    <div class="logo">
-      МУЗЕЙ РОМАНА ФАШАЯНА
-    </div>
-    <nav class="main-nav">
-      <a href="../index.html" class="nav-link">Главная</a>
-      <a href="gallery.html" class="nav-link active">Галерея</a>
-      <a href="sculptor.html" class="nav-link">Биография</a>
-    </nav>
-  </header>
+    <main>
+      <section class="content-section gallery-wide" style="margin-top: 40px">
+        <h1 class="section-title">Галерея работ</h1>
 
-  <div class="cursor-light" id="cursorLight"></div>
-
-  <main>
-    <section class="content-section gallery-wide" style="margin-top: 40px;">
-      <h1 class="section-title">Галерея работ</h1>
-
-      <div class="exhibition-card exhibition-hero">
-        <h2 class="grid-title">Защитникам Русской Земли</h2>
-        <p class="grid-text">
-          Монументальная серия скульптур, посвященная героям и защитникам Отечества.
-          Коллекция представляет собой уникальное сочетание традиционной русской
-          скульптурной школы и современных художественных решений.
-        </p>
-        <a href="exhibition.html" class="btn-outline btn-inline">Посмотреть выставку в 3D</a>
-      </div>
-      <div class="exhibition-card">
-        <h2 class="grid-title">Все работы</h2>
-
-        <div class="works-grid">
-
-          <a class="work-card" href="sculpture.html?model=turgenev" aria-label="Открыть скульптуру: Тургенев">
-            <div class="work-thumb">
-              <img src="../assets/png/turgenev.png" alt="Скульптура: Тургенев" loading="lazy">
-            </div>
-            <div class="work-meta">
-              <div class="work-title">Тургенев</div>
-              <div class="work-sub">— • — • 3D</div>
-            </div>
-          </a>
-
-          <a class="work-card" href="sculpture.html?model=children" aria-label="Открыть скульптуру: Дети войны">
-            <div class="work-thumb">
-              <img src="../assets/png/children.png" alt="Скульптура: Дети войны" loading="lazy">
-            </div>
-            <div class="work-meta">
-              <div class="work-title">Дети войны</div>
-              <div class="work-sub">— • — • 3D</div>
-            </div>
-          </a>
-
-          <a class="work-card" href="sculpture.html?model=fish" aria-label="Открыть скульптуру: Рыба">
-            <div class="work-thumb">
-              <img src="../assets/png/fish.png" alt="Скульптура: Рыба" loading="lazy">
-            </div>
-            <div class="work-meta">
-              <div class="work-title">Рыба</div>
-              <div class="work-sub">— • — • 3D</div>
-            </div>
-          </a>
-
-          <a class="work-card" href="sculpture.html?model=kitel" aria-label="Открыть скульптуру: Китель">
-            <div class="work-thumb">
-              <img src="../assets/png/kitel.png" alt="Скульптура: Китель" loading="lazy">
-            </div>
-            <div class="work-meta">
-              <div class="work-title">Китель</div>
-              <div class="work-sub">— • — • 3D</div>
-            </div>
-          </a>
-
-          <a class="work-card" href="sculpture.html?model=loris" aria-label="Открыть скульптуру: Лорис-Меликов">
-            <div class="work-thumb">
-              <img src="../assets/png/loris.png" alt="Скульптура: Лорис-Меликов" loading="lazy">
-            </div>
-            <div class="work-meta">
-              <div class="work-title">Лорис-Меликов</div>
-              <div class="work-sub">— • — • 3D</div>
-            </div>
-          </a>
-
-          <a class="work-card" href="sculpture.html?model=man" aria-label="Открыть скульптуру: Дружинник">
-            <div class="work-thumb">
-              <img src="../assets/png/man.png" alt="Скульптура: Дружинник" loading="lazy">
-            </div>
-            <div class="work-meta">
-              <div class="work-title">Дружинник</div>
-              <div class="work-sub">— • — • 3D</div>
-            </div>
-          </a>
-
-          <a class="work-card" href="sculpture.html?model=press" aria-label="Открыть скульптуру: Пресс">
-            <div class="work-thumb">
-              <img src="../assets/png/press.png" alt="Скульптура: Пресс" loading="lazy">
-            </div>
-            <div class="work-meta">
-              <div class="work-title">Пресс</div>
-              <div class="work-sub">— • — • 3D</div>
-            </div>
-          </a>
-
+        <div class="exhibition-card exhibition-hero">
+          <h2 class="grid-title">Защитникам Русской Земли</h2>
+          <p class="grid-text">
+            Монументальная серия скульптур, посвященная героям и защитникам
+            Отечества. Коллекция представляет собой уникальное сочетание
+            традиционной русской скульптурной школы и современных художественных
+            решений.
+          </p>
+          <a href="exhibition.html" class="btn-outline btn-inline"
+            >Посмотреть выставку в 3D</a
+          >
         </div>
+        <div class="exhibition-card">
+          <h2 class="grid-title">Все работы</h2>
+
+          <div class="works-grid">
+            <a
+              class="work-card"
+              href="sculpture.html?model=turgenev"
+              aria-label="Открыть скульптуру: Тургенев"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/turgenev.png"
+                  alt="Скульптура: Тургенев"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Тургенев</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=children"
+              aria-label="Открыть скульптуру: Дети войны"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/children.png"
+                  alt="Скульптура: Дети войны"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Дети войны</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=fish"
+              aria-label="Открыть скульптуру: Рыба"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/fish.png"
+                  alt="Скульптура: Рыба"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Рыба</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=kitel"
+              aria-label="Открыть скульптуру: Китель"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/kitel.png"
+                  alt="Скульптура: Китель"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Китель</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=loris"
+              aria-label="Открыть скульптуру: Лорис-Меликов"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/loris.png"
+                  alt="Скульптура: Лорис-Меликов"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Лорис-Меликов</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=man"
+              aria-label="Открыть скульптуру: Дружинник"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/man.png"
+                  alt="Скульптура: Дружинник"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Дружинник</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=press"
+              aria-label="Открыть скульптуру: Пресс"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/press.png"
+                  alt="Скульптура: Пресс"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Пресс</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <span>© Музей Романа Фашаяна</span>
+        <span>Цифровая галерея скульптуры</span>
       </div>
-    </section>
-  </main>
+    </footer>
 
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <span>© Музей Романа Фашаяна</span>
-      <span>Цифровая галерея скульптуры</span>
-    </div>
-  </footer>
-
-  <script src="../js/cursor.js"></script>
-  <script type="module" src="../js/gallery.js"></script>
-</body>
-
+    <script src="../js/cursor.js"></script>
+    <script type="module" src="../js/gallery.js"></script>
+  </body>
 </html>

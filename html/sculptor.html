@@ -1,336 +1,475 @@
 <!doctype html>
 <html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Биография — Музей Романа Фашаяна</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Forum&family=Manrope:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
 
-<head>
-  <meta charset="utf-8">
-  <title>Биография — Музей Романа Фашаяна</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Forum&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/sculptor.css" />
+  </head>
 
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/sculptor.css">
-</head>
+  <body class="page-sculptor">
+    <header class="site-header">
+      <div class="logo">МУЗЕЙ РОМАНА ФАШАЯНА</div>
+      <nav class="main-nav">
+        <a href="../index.html" class="nav-link">Главная</a>
+        <a href="gallery.html" class="nav-link">Галерея</a>
+        <a href="sculptor.html" class="nav-link active">Биография</a>
+      </nav>
+    </header>
 
-<body class="page-sculptor">
+    <div class="cursor-light" id="cursorLight"></div>
 
-  <header class="site-header">
-    <div class="logo">МУЗЕЙ РОМАНА ФАШАЯНА</div>
-    <nav class="main-nav">
-      <a href="../index.html" class="nav-link">Главная</a>
-      <a href="gallery.html" class="nav-link">Галерея</a>
-      <a href="sculptor.html" class="nav-link active">Биография</a>
-    </nav>
-  </header>
+    <main>
+      <section
+        class="content-section"
+        style="margin-top: 40px; max-width: 1200px"
+      >
+        <h1 class="section-title">Биография</h1>
 
-  <div class="cursor-light" id="cursorLight"></div>
+        <div class="bio-hero">
+          <div class="bio-hero-photo">
+            <img
+              src="../assets/photos/fashayan_hero.png"
+              alt="Роман Олегович Фашаян в мастерской"
+              loading="eager"
+            />
+          </div>
 
-  <main>
-    <section class="content-section" style="margin-top: 40px; max-width: 1200px;">
-      <h1 class="section-title">Биография</h1>
+          <div class="bio-hero-body">
+            <h2 class="bio-name">Фашаян Роман Олегович</h2>
+            <p class="bio-subtitle section-text" style="margin: 0 0 18px">
+              Российский скульптор, преподаватель Института цифрового дизайна
+              МИЭТа, заслуженный художник Российской Федерации.
+            </p>
 
-      <!-- HERO -->
-      <div class="bio-hero">
-        <div class="bio-hero-photo">
-          <img src="../assets/photos/fashayan_hero.png" alt="Роман Олегович Фашаян в мастерской" loading="eager">
+            <ul class="facts">
+              <li class="fact">
+                <div class="k">Годы жизни</div>
+                <div class="v">26 июня 1959 — 8 мая 2025</div>
+              </li>
+              <li class="fact">
+                <div class="k">Место рождения</div>
+                <div class="v">Баку</div>
+              </li>
+              <li class="fact">
+                <div class="k">Профессия</div>
+                <div class="v">Скульптор (монументальная скульптура)</div>
+              </li>
+              <li class="fact">
+                <div class="k">Профиль работ</div>
+                <div class="v">
+                  Памятники и мемориалы, тема памяти и героизма
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <div class="bio-hero-body">
-          <h2 class="bio-name">Фашаян Роман Олегович</h2>
-          <p class="bio-subtitle section-text" style="margin:0 0 18px;">
-            Российский скульптор, преподаватель Института цифрового дизайна МИЭТа, заслуженный художник Российской Федерации.
-          </p>
+        <div class="bio-grid">
+          <article class="card">
+            <h3 class="card-title">Творческий путь</h3>
+            <p>
+              Скульптурой занимался с начала 1980-х годов. Наиболее известен как
+              автор монументальных работ и мемориалов; по данным открытых
+              источников, создал не менее нескольких десятков памятников.
+            </p>
+            <p>
+              Учился в Пензенском художественном училище им. К. А. Савицкого
+              (окончание с отличием), затем — в Московском высшем
+              художественно-промышленном училище (Строгановка), где позже прошёл
+              аспирантуру.
+            </p>
+            <p>
+              В профессиональной деятельности совмещал художественную практику и
+              педагогическую работу: преподавал в Институте цифрового дизайна
+              МИЭТа, имел учёное звание доцента. Также был директором Детской
+              художественной школы № 9 города Москвы.
+            </p>
+          </article>
 
-          <ul class="facts">
-            <li class="fact">
-              <div class="k">Годы жизни</div>
-              <div class="v">26 июня 1959 — 8 мая 2025</div>
-            </li>
-            <li class="fact">
-              <div class="k">Место рождения</div>
-              <div class="v">Баку</div>
-            </li>
-            <li class="fact">
-              <div class="k">Профессия</div>
-              <div class="v">Скульптор (монументальная скульптура)</div>
-            </li>
-            <li class="fact">
-              <div class="k">Профиль работ</div>
-              <div class="v">Памятники и мемориалы, тема памяти и героизма</div>
+          <aside class="card">
+            <h3 class="card-title">Ключевые даты</h3>
+            <ul class="timeline">
+              <li>
+                <div class="year">1959</div>
+                <div class="text">Рождение в Баку.</div>
+              </li>
+              <li>
+                <div class="year">1985</div>
+                <div class="text">
+                  Окончил Пензенское художественное училище им. К. А. Савицкого
+                  (с отличием).
+                </div>
+              </li>
+              <li>
+                <div class="year">1990</div>
+                <div class="text">Окончил Строгановку (с отличием).</div>
+              </li>
+              <li>
+                <div class="year">2001</div>
+                <div class="text">Завершил аспирантуру в Строгановке.</div>
+              </li>
+              <li>
+                <div class="year">2011</div>
+                <div class="text">
+                  Присвоено звание «Заслуженный художник Российской Федерации».
+                </div>
+              </li>
+              <li>
+                <div class="year">2015</div>
+                <div class="text">
+                  Победитель конкурса на создание стел «Город воинской доблести»
+                  для городов Подмосковья.
+                </div>
+              </li>
+              <li>
+                <div class="year">2025</div>
+                <div class="text">Скончался в Ефремове (Тульская область).</div>
+              </li>
+            </ul>
+          </aside>
+        </div>
+
+        <section
+          class="photo-gallery-block"
+          aria-label="Фотографии Романа Фашаяна"
+        >
+          <div class="photo-gallery-head">
+            <h3 class="card-title" style="margin: 0">Фотографии</h3>
+          </div>
+
+          <div class="photo-gallery-shell">
+            <button
+              class="photo-strip-nav photo-strip-nav--prev"
+              type="button"
+              aria-label="Показать предыдущие фотографии"
+            >
+              ‹
+            </button>
+
+            <div class="photo-strip-wrap">
+              <div class="photo-strip" id="photoStrip">
+                <button
+                  class="photo"
+                  type="button"
+                  data-full="../assets/photos/fashayan_portrait.png"
+                  data-alt="Портрет Романа Фашаяна"
+                  data-index="0"
+                >
+                  <img
+                    src="../assets/photos/fashayan_portrait.png"
+                    alt="Портрет Романа Фашаяна"
+                    loading="lazy"
+                  />
+                </button>
+
+                <button
+                  class="photo"
+                  type="button"
+                  data-full="../assets/photos/fashayan_work.jpg"
+                  data-alt="Роман Фашаян за работой над скульптурой"
+                  data-index="1"
+                >
+                  <img
+                    src="../assets/photos/fashayan_work.jpg"
+                    alt="Роман Фашаян за работой над скульптурой"
+                    loading="lazy"
+                  />
+                </button>
+
+                <button
+                  class="photo"
+                  type="button"
+                  data-full="../assets/photos/fashayan_hero.png"
+                  data-alt="Работа в мастерской"
+                  data-index="2"
+                >
+                  <img
+                    src="../assets/photos/fashayan_hero.png"
+                    alt="Работа в мастерской"
+                    loading="lazy"
+                  />
+                </button>
+
+                <button
+                  class="photo"
+                  type="button"
+                  data-full="../assets/photos/fashayan_4.jpg"
+                  data-alt="Работа в мастерской"
+                  data-index="3"
+                >
+                  <img
+                    src="../assets/photos/fashayan_4.jpg"
+                    alt="Работа в мастерской"
+                    loading="lazy"
+                  />
+                </button>
+
+                <button
+                  class="photo"
+                  type="button"
+                  data-full="../assets/photos/fashayan_5.jpg"
+                  data-alt="Работа в мастерской"
+                  data-index="4"
+                >
+                  <img
+                    src="../assets/photos/fashayan_5.jpg"
+                    alt="Работа в мастерской"
+                    loading="lazy"
+                  />
+                </button>
+              </div>
+            </div>
+
+            <button
+              class="photo-strip-nav photo-strip-nav--next"
+              type="button"
+              aria-label="Показать следующие фотографии"
+            >
+              ›
+            </button>
+          </div>
+        </section>
+
+        <div class="bio-grid">
+          <article class="card">
+            <h3 class="card-title">Награды и признание</h3>
+            <ul class="bullets">
+              <li>Медаль «За труды в культуре и искусстве» (2025).</li>
+              <li>
+                Звание «Заслуженный художник Российской Федерации» (2011).
+              </li>
+              <li>
+                Серебряная медаль Российской академии художеств (2016) — за
+                монументальные произведения.
+              </li>
+              <li>Премия «Наше Подмосковье» — лауреат (неоднократно).</li>
+            </ul>
+          </article>
+
+          <aside class="card">
+            <h3 class="card-title">Избранные работы</h3>
+            <ul class="bullets">
+              <li>Монумент «Скорбящая мать» и Вечный огонь (Солнечногорск).</li>
+              <li>
+                Памятник дважды Герою Советского Союза Д. А. Драгунскому
+                (Солнечногорск, 2001).
+              </li>
+              <li>
+                Стелы «Город воинской доблести» (Клин, Истра, Солнечногорск;
+                2016).
+              </li>
+              <li>
+                Двойной барельеф «Роскосмос» к 100-летию С. А. Афанасьева (Клин,
+                2018).
+              </li>
+            </ul>
+          </aside>
+        </div>
+
+        <div class="card" style="margin-top: 22px">
+          <h3 class="card-title">Семья</h3>
+          <ul class="bullets">
+            <li>Жена — Ольга Борисовна Фашаян, художник.</li>
+            <li>
+              Дочери: Евгения (дизайнер, доцент МИЭТа) и Жанна (фотограф).
             </li>
           </ul>
         </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <span>© Музей Романа Фашаяна</span>
+        <span>Цифровая галерея скульптуры</span>
       </div>
+    </footer>
 
-      <!-- MAIN GRID -->
-      <div class="bio-grid">
-        <article class="card">
-          <h3 class="card-title">Творческий путь</h3>
-          <p>
-            Скульптурой занимался с начала 1980-х годов. Наиболее известен как автор монументальных работ и мемориалов;
-            по данным открытых источников, создал не менее нескольких десятков памятников.
-          </p>
-          <p>
-            Учился в Пензенском художественном училище им. К. А. Савицкого (окончание с отличием), затем —
-            в Московском высшем художественно-промышленном училище (Строгановка), где позже прошёл аспирантуру.
-          </p>
-          <p>
-            В профессиональной деятельности совмещал художественную практику и педагогическую работу:
-            преподавал в Институте цифрового дизайна МИЭТа, имел учёное звание доцента.
-            Также был директором Детской художественной школы № 9 города Москвы.
-          </p>
-        </article>
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+      <div class="lightbox__backdrop" data-close="1"></div>
 
-        <aside class="card">
-          <h3 class="card-title">Ключевые даты</h3>
-          <ul class="timeline">
-            <li>
-              <div class="year">1959</div>
-              <div class="text">Рождение в Баку.</div>
-            </li>
-            <li>
-              <div class="year">1985</div>
-              <div class="text">Окончил Пензенское художественное училище им. К. А. Савицкого (с отличием).</div>
-            </li>
-            <li>
-              <div class="year">1990</div>
-              <div class="text">Окончил Строгановку (с отличием).</div>
-            </li>
-            <li>
-              <div class="year">2001</div>
-              <div class="text">Завершил аспирантуру в Строгановке.</div>
-            </li>
-            <li>
-              <div class="year">2011</div>
-              <div class="text">Присвоено звание «Заслуженный художник Российской Федерации».</div>
-            </li>
-            <li>
-              <div class="year">2015</div>
-              <div class="text">Победитель конкурса на создание стел «Город воинской доблести» для городов Подмосковья.</div>
-            </li>
-            <li>
-              <div class="year">2025</div>
-              <div class="text">Скончался в Ефремове (Тульская область).</div>
-            </li>
-          </ul>
-        </aside>
-      </div>
-
-      <!-- PHOTOS (clickable + gallery index) -->
-      <div class="photo-strip" aria-label="Фотографии Романа Фашаяна">
-        <button class="photo" type="button"
-          data-full="../assets/photos/fashayan_portrait.png"
-          data-alt="Портрет Романа Фашаяна"
-          data-index="0">
-          <img src="../assets/photos/fashayan_portrait.png" alt="Портрет Романа Фашаяна" loading="lazy">
+      <div
+        class="lightbox__panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Просмотр фотографии"
+      >
+        <button
+          class="lightbox__close"
+          type="button"
+          aria-label="Закрыть"
+          data-close="1"
+        >
+          ✕
         </button>
 
-        <button class="photo" type="button"
-          data-full="../assets/photos/fashayan_work.png"
-          data-alt="Роман Фашаян за работой над скульптурой"
-          data-index="1">
-          <img src="../assets/photos/fashayan_work.png" alt="Роман Фашаян за работой над скульптурой" loading="lazy">
+        <button
+          class="lightbox__nav lightbox__nav--prev"
+          type="button"
+          aria-label="Предыдущая фотография"
+        >
+          ‹
+        </button>
+        <button
+          class="lightbox__nav lightbox__nav--next"
+          type="button"
+          aria-label="Следующая фотография"
+        >
+          ›
         </button>
 
-        <button class="photo" type="button"
-          data-full="../assets/photos/fashayan_hero.png"
-          data-alt="Работа в мастерской"
-          data-index="2">
-          <img src="../assets/photos/fashayan_hero.png" alt="Работа в мастерской" loading="lazy">
-        </button>
+        <img class="lightbox__img" id="lightboxImg" alt="" />
+        <div class="lightbox__caption" id="lightboxCaption"></div>
       </div>
-
-      <!-- SECOND GRID -->
-      <div class="bio-grid">
-        <article class="card">
-          <h3 class="card-title">Награды и признание</h3>
-          <ul class="bullets">
-            <li>Медаль «За труды в культуре и искусстве» (2025).</li>
-            <li>Звание «Заслуженный художник Российской Федерации» (2011).</li>
-            <li>Серебряная медаль Российской академии художеств (2016) — за монументальные произведения.</li>
-            <li>Премия «Наше Подмосковье» — лауреат (неоднократно).</li>
-          </ul>
-        </article>
-
-        <aside class="card">
-          <h3 class="card-title">Избранные работы</h3>
-          <ul class="bullets">
-            <li>Монумент «Скорбящая мать» и Вечный огонь (Солнечногорск).</li>
-            <li>Памятник дважды Герою Советского Союза Д. А. Драгунскому (Солнечногорск, 2001).</li>
-            <li>Стелы «Город воинской доблести» (Клин, Истра, Солнечногорск; 2016).</li>
-            <li>Двойной барельеф «Роскосмос» к 100-летию С. А. Афанасьева (Клин, 2018).</li>
-          </ul>
-        </aside>
-      </div>
-
-      <!-- FAMILY -->
-      <div class="card" style="margin-top: 22px;">
-        <h3 class="card-title">Семья</h3>
-        <ul class="bullets">
-          <li>Жена — Ольга Борисовна Фашаян, художник.</li>
-          <li>Дочери: Евгения (дизайнер, доцент МИЭТа) и Жанна (фотограф).</li>
-        </ul>
-      </div>
-
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <span>© Музей Романа Фашаяна</span>
-      <span>Цифровая галерея скульптуры</span>
     </div>
-  </footer>
 
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox" aria-hidden="true">
-    <div class="lightbox__backdrop" data-close="1"></div>
+    <script src="../js/cursor.js"></script>
 
-    <div class="lightbox__panel" role="dialog" aria-modal="true" aria-label="Просмотр фотографии">
-      <button class="lightbox__close" type="button" aria-label="Закрыть" data-close="1">✕</button>
+    <script>
+      (function () {
+        const lb = document.getElementById("lightbox");
+        const lbImg = document.getElementById("lightboxImg");
+        const lbCap = document.getElementById("lightboxCaption");
+        const thumbs = Array.from(
+          document.querySelectorAll(".photo-strip .photo"),
+        );
+        const btnPrev = document.querySelector(".lightbox__nav--prev");
+        const btnNext = document.querySelector(".lightbox__nav--next");
+        const strip = document.getElementById("photoStrip");
+        const stripPrev = document.querySelector(".photo-strip-nav--prev");
+        const stripNext = document.querySelector(".photo-strip-nav--next");
 
-      <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Предыдущая фотография">‹</button>
-      <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Следующая фотография">›</button>
+        if (!lb || !lbImg || !thumbs.length) return;
 
-      <img class="lightbox__img" id="lightboxImg" alt="">
-      <div class="lightbox__caption" id="lightboxCaption"></div>
-    </div>
-  </div>
+        const items = thumbs
+          .map((btn) => ({
+            src: btn.getAttribute("data-full") || btn.querySelector("img")?.src,
+            alt:
+              btn.getAttribute("data-alt") ||
+              btn.querySelector("img")?.alt ||
+              "",
+          }))
+          .filter((x) => x.src);
 
-  <script src="../js/cursor.js"></script>
+        let idx = 0;
+        let startX = 0;
+        let startY = 0;
+        let isDown = false;
 
-  <script>
-    // Preloader: безопасно (если блока нет — ничего не делаем)
-    (function () {
-      const preloader = document.getElementById('preloader');
-      if (!preloader) return;
-
-      const fill = document.getElementById('preloaderFill');
-      const perc = document.getElementById('preloaderPerc');
-
-      let p = 0;
-      const tick = () => {
-        p = Math.min(100, p + Math.max(1, Math.round((100 - p) * 0.08)));
-        if (fill) fill.style.width = p + '%';
-        if (perc) perc.textContent = p + '%';
-        if (p >= 100) {
-          preloader.classList.add('preloader-hidden');
-          setTimeout(() => preloader.remove(), 450);
-          clearInterval(t);
+        function render() {
+          const it = items[idx];
+          lbImg.src = it.src;
+          lbImg.alt = it.alt || "";
+          if (lbCap) lbCap.textContent = it.alt || "";
         }
-      };
 
-      const t = setInterval(tick, 80);
-      window.addEventListener('load', () => {
-        p = Math.max(p, 80);
-      });
-    })();
-  </script>
-
-  <script>
-    // Lightbox: open/close + arrows + swipe
-    (function () {
-      const lb = document.getElementById('lightbox');
-      const lbImg = document.getElementById('lightboxImg');
-      const lbCap = document.getElementById('lightboxCaption');
-      const thumbs = Array.from(document.querySelectorAll('.photo-strip .photo'));
-      const btnPrev = document.querySelector('.lightbox__nav--prev');
-      const btnNext = document.querySelector('.lightbox__nav--next');
-
-      if (!lb || !lbImg || !thumbs.length) return;
-
-      const items = thumbs.map(btn => ({
-        src: btn.getAttribute('data-full') || btn.querySelector('img')?.src,
-        alt: btn.getAttribute('data-alt') || btn.querySelector('img')?.alt || ''
-      })).filter(x => x.src);
-
-      let idx = 0;
-      let startX = 0;
-      let startY = 0;
-      let isDown = false;
-
-      function render() {
-        const it = items[idx];
-        lbImg.src = it.src;
-        lbImg.alt = it.alt || '';
-        if (lbCap) lbCap.textContent = it.alt || '';
-      }
-
-      function openAt(i) {
-        idx = (i + items.length) % items.length;
-        render();
-        lb.classList.add('is-open');
-        lb.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('no-scroll');
-      }
-
-      function close() {
-        lb.classList.remove('is-open');
-        lb.setAttribute('aria-hidden', 'true');
-        lbImg.src = '';
-        if (lbCap) lbCap.textContent = '';
-        document.body.classList.remove('no-scroll');
-      }
-
-      function next() {
-        idx = (idx + 1) % items.length;
-        render();
-      }
-
-      function prev() {
-        idx = (idx - 1 + items.length) % items.length;
-        render();
-      }
-
-      // Open from thumbnails
-      thumbs.forEach((btn, i) => {
-        btn.addEventListener('click', () => openAt(i));
-      });
-
-      // Click close by backdrop or X
-      lb.addEventListener('click', (e) => {
-        const t = e.target;
-        if (t && t.getAttribute && t.getAttribute('data-close') === '1') close();
-      });
-
-      // Buttons
-      if (btnNext) btnNext.addEventListener('click', (e) => { e.stopPropagation(); next(); });
-      if (btnPrev) btnPrev.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
-
-      // Keyboard
-      document.addEventListener('keydown', (e) => {
-        if (!lb.classList.contains('is-open')) return;
-        if (e.key === 'Escape') close();
-        if (e.key === 'ArrowRight') next();
-        if (e.key === 'ArrowLeft') prev();
-      });
-
-      // Swipe (pointer events)
-      lb.addEventListener('pointerdown', (e) => {
-        if (!lb.classList.contains('is-open')) return;
-        isDown = true;
-        startX = e.clientX;
-        startY = e.clientY;
-      });
-
-      lb.addEventListener('pointerup', (e) => {
-        if (!lb.classList.contains('is-open')) return;
-        if (!isDown) return;
-        isDown = false;
-
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-
-        // горизонтальный свайп, игнорируем вертикальные жесты
-        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.2) {
-          if (dx < 0) next();
-          else prev();
+        function openAt(i) {
+          idx = (i + items.length) % items.length;
+          render();
+          lb.classList.add("is-open");
+          lb.setAttribute("aria-hidden", "false");
+          document.body.classList.add("no-scroll");
         }
-      });
 
-      lb.addEventListener('pointercancel', () => { isDown = false; });
-    })();
-  </script>
+        function close() {
+          lb.classList.remove("is-open");
+          lb.setAttribute("aria-hidden", "true");
+          lbImg.src = "";
+          if (lbCap) lbCap.textContent = "";
+          document.body.classList.remove("no-scroll");
+        }
 
-</body>
+        function next() {
+          idx = (idx + 1) % items.length;
+          render();
+        }
 
+        function prev() {
+          idx = (idx - 1 + items.length) % items.length;
+          render();
+        }
+
+        function scrollStrip(direction) {
+          if (!strip) return;
+          const card = strip.querySelector(".photo");
+          const step = card ? card.getBoundingClientRect().width + 12 : 280;
+          strip.scrollBy({ left: direction * step, behavior: "smooth" });
+        }
+
+        thumbs.forEach((btn, i) => {
+          btn.addEventListener("click", () => openAt(i));
+        });
+
+        lb.addEventListener("click", (e) => {
+          const t = e.target;
+          if (t && t.getAttribute && t.getAttribute("data-close") === "1")
+            close();
+        });
+
+        if (btnNext)
+          btnNext.addEventListener("click", (e) => {
+            e.stopPropagation();
+            next();
+          });
+
+        if (btnPrev)
+          btnPrev.addEventListener("click", (e) => {
+            e.stopPropagation();
+            prev();
+          });
+
+        if (stripNext) {
+          stripNext.addEventListener("click", () => scrollStrip(1));
+        }
+
+        if (stripPrev) {
+          stripPrev.addEventListener("click", () => scrollStrip(-1));
+        }
+
+        document.addEventListener("keydown", (e) => {
+          if (lb.classList.contains("is-open")) {
+            if (e.key === "Escape") close();
+            if (e.key === "ArrowRight") next();
+            if (e.key === "ArrowLeft") prev();
+            return;
+          }
+
+          if (e.key === "ArrowRight") scrollStrip(1);
+          if (e.key === "ArrowLeft") scrollStrip(-1);
+        });
+
+        lb.addEventListener("pointerdown", (e) => {
+          if (!lb.classList.contains("is-open")) return;
+          isDown = true;
+          startX = e.clientX;
+          startY = e.clientY;
+        });
+
+        lb.addEventListener("pointerup", (e) => {
+          if (!lb.classList.contains("is-open")) return;
+          if (!isDown) return;
+          isDown = false;
+
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+
+          if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+            if (dx < 0) next();
+            else prev();
+          }
+        });
+
+        lb.addEventListener("pointercancel", () => {
+          isDown = false;
+        });
+      })();
+    </script>
+  </body>
 </html>

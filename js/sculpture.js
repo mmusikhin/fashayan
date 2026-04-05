@@ -16,7 +16,6 @@ const hintsEl = document.getElementById("view-hints");
 
 function revealOverlayUI() {
   if (maskEl) maskEl.classList.add("is-visible");
-
   if (hintsEl) hintsEl.classList.add("is-visible");
 
   if (infoEl) {
@@ -37,8 +36,9 @@ function hidePreloader() {
   if (!preloader) return;
   preloader.classList.add("preloader-hidden");
   setTimeout(() => {
-    if (preloader && preloader.parentNode)
+    if (preloader && preloader.parentNode) {
       preloader.parentNode.removeChild(preloader);
+    }
   }, 500);
 }
 
@@ -56,8 +56,11 @@ const meta = SCULPTURES[modelKey] || {
   title: "Скульптура",
   year: "—",
   material: "—",
+  lightProfile: "balanced",
+  initialYaw: 0,
+  initialPitch: 0.08,
+  zoomInMultiplier: 0.7,
 };
-
 const PLACEHOLDER_DESC =
   "Бронзовая фигура воина-защитника — собирательный образ стойкости и долга. " +
   "В пластике ощущается напряжённая готовность встать между опасностью и родной землёй.";
@@ -87,9 +90,10 @@ const uiRoot =
 
 if (titleEl) titleEl.textContent = meta.title;
 if (subEl) subEl.textContent = `${meta.year} • ${meta.material} • 3D`;
-if (textEl)
+if (textEl) {
   textEl.textContent =
     meta.description || DESCRIPTIONS[modelKey] || PLACEHOLDER_DESC;
+}
 
 let uiActivated = false;
 function activateUI() {
@@ -112,7 +116,6 @@ if (!viewerEl) {
   renderer.setSize(viewerEl.clientWidth, viewerEl.clientHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.6;
   viewerEl.appendChild(renderer.domElement);
 
   const camera = new THREE.PerspectiveCamera(
@@ -125,27 +128,79 @@ if (!viewerEl) {
   const UP_AXIS = new THREE.Vector3(0, 1, 0);
   camera.up.copy(UP_AXIS);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.95));
+  const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+  scene.add(ambient);
 
-  const hemi = new THREE.HemisphereLight(0xffffff, 0x111111, 11.35);
+  const hemi = new THREE.HemisphereLight(0xffffff, 0x111111, 3.2);
   scene.add(hemi);
 
-  const key = new THREE.DirectionalLight(0xffffff, 2.2);
-  key.position.set(4, 6, 3);
+  const key = new THREE.DirectionalLight(0xffffff, 1.6);
+  key.position.set(4, 6, 4);
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0xffffff, 1.55);
-  fill.position.set(-5, 3, -4);
+  const fill = new THREE.DirectionalLight(0xffffff, 1.0);
+  fill.position.set(-4, 3, -3);
   scene.add(fill);
 
-  const camLight = new THREE.PointLight(0xffffff, 1.35, 0, 2);
+  const camLight = new THREE.PointLight(0xffffff, 0.9, 0, 2);
   scene.add(camLight);
 
-  const spot = new THREE.SpotLight(0xffffff, 1.4, 0, Math.PI / 5, 0.4, 1);
-  spot.position.set(0, 8, 6);
-  spot.target.position.set(0, 0, 0);
+  const spot = new THREE.SpotLight(0xffffff, 0.9, 0, Math.PI / 5, 0.4, 1);
+  spot.position.set(0, 7, 5);
   scene.add(spot);
   scene.add(spot.target);
+
+  const LIGHT_PROFILES = {
+    dark: {
+      exposure: 2.6,
+      ambient: 2,
+      hemi: 4,
+      key: 1.9,
+      fill: 1.2,
+      cam: 1.05,
+      spot: 2.95,
+    },
+    balanced: {
+      exposure: 1.42,
+      ambient: 0.82,
+      hemi: 3.05,
+      key: 1.55,
+      fill: 0.95,
+      cam: 0.82,
+      spot: 0.72,
+    },
+    bright: {
+      exposure: 1.22,
+      ambient: 0.66,
+      hemi: 2.45,
+      key: 1.22,
+      fill: 0.74,
+      cam: 0.6,
+      spot: 0.5,
+    },
+    white: {
+      exposure: 0.9,
+      ambient: 0.08,
+      hemi: 1.55,
+      key: 0.9,
+      fill: 0.32,
+      cam: 0.34,
+      spot: 0.8,
+    },
+  };
+
+  function applyLightProfile(profileName) {
+    const profile = LIGHT_PROFILES[profileName] || LIGHT_PROFILES.balanced;
+    renderer.toneMappingExposure = profile.exposure;
+    ambient.intensity = profile.ambient;
+    hemi.intensity = profile.hemi;
+    key.intensity = profile.key;
+    fill.intensity = profile.fill;
+    camLight.intensity = profile.cam;
+    spot.intensity = profile.spot;
+  }
+
+  applyLightProfile(meta.lightProfile);
 
   const loader = new GLTFLoader();
   let model = null;
@@ -156,25 +211,54 @@ if (!viewerEl) {
 
   const orbit = {
     target: new THREE.Vector3(0, 0, 0),
-    yaw: 0, 
-    height: 0.35,
+    yaw: typeof meta.initialYaw === "number" ? meta.initialYaw : 0,
+    pitch: typeof meta.initialPitch === "number" ? meta.initialPitch : 0.08,
     distance: 2.8,
     min: 0.2,
     max: 50,
   };
 
+  const rotationInertia = {
+    velocity: 0,
+    damping: 0.95,
+    velocityScale: 0.01,
+    minStop: 0.00012,
+    releaseDeadzone: 0.01,
+  };
+
   function updateCamera() {
-    const x = Math.sin(orbit.yaw) * orbit.distance;
-    const z = Math.cos(orbit.yaw) * orbit.distance;
+    const safePitch = Math.max(-1.2, Math.min(1.2, orbit.pitch));
+    const cosPitch = Math.cos(safePitch);
+    const sinPitch = Math.sin(safePitch);
+
+    const x = Math.sin(orbit.yaw) * orbit.distance * cosPitch;
+    const y = sinPitch * orbit.distance;
+    const z = Math.cos(orbit.yaw) * orbit.distance * cosPitch;
 
     camera.position.set(
       orbit.target.x + x,
-      orbit.target.y + orbit.height,
+      orbit.target.y + y,
       orbit.target.z + z,
     );
-    camera.lookAt(orbit.target);
 
+    camera.lookAt(orbit.target);
     camLight.position.copy(camera.position);
+    spot.target.position.copy(orbit.target);
+  }
+
+  function updateInertia() {
+    if (!model) return;
+    if (isLmb) return;
+
+    const v = rotationInertia.velocity;
+    if (Math.abs(v) < rotationInertia.minStop) {
+      rotationInertia.velocity = 0;
+      return;
+    }
+
+    orbit.yaw += v;
+    rotationInertia.velocity *= rotationInertia.damping;
+    updateCamera();
   }
 
   function showError() {
@@ -189,17 +273,19 @@ if (!viewerEl) {
       bbox.setFromObject(model);
       bbox.getCenter(center);
       bbox.getSize(size);
+
       model.position.sub(center);
 
       scene.add(model);
 
       const radius = Math.max(size.x, size.y, size.z) * 0.55 || 1;
-
       orbit.distance = Math.max(radius * 2.4, 1.2);
-      orbit.min = Math.max(radius * 0.35, 0.2);
-      orbit.max = Math.max(radius * 12, orbit.distance * 3);
 
-      orbit.height = radius * 0.35;
+      const zoomInMultiplier =
+        typeof meta.zoomInMultiplier === "number" ? meta.zoomInMultiplier : 0.7;
+
+      orbit.min = Math.max(radius * zoomInMultiplier, 0.2);
+      orbit.max = Math.max(radius * 12, orbit.distance * 3);
       orbit.target.set(0, 0, 0);
 
       updateCamera();
@@ -235,8 +321,11 @@ if (!viewerEl) {
 
   renderer.domElement.addEventListener("pointerdown", (e) => {
     activateUI();
-    if (e.button === 0) isLmb = true; 
-    if (e.button === 2) isRmb = true; 
+    if (e.button === 0) {
+      isLmb = true;
+      rotationInertia.velocity = 0;
+    }
+    if (e.button === 2) isRmb = true;
     lastX = e.clientX;
     lastY = e.clientY;
   });
@@ -244,6 +333,10 @@ if (!viewerEl) {
   window.addEventListener("pointerup", () => {
     isLmb = false;
     isRmb = false;
+
+    if (Math.abs(rotationInertia.velocity) < rotationInertia.releaseDeadzone) {
+      rotationInertia.velocity = 0;
+    }
   });
 
   renderer.domElement.addEventListener("pointermove", (e) => {
@@ -258,6 +351,7 @@ if (!viewerEl) {
 
     if (isLmb) {
       orbit.yaw -= dx * 0.01;
+      rotationInertia.velocity = -dx * rotationInertia.velocityScale;
       updateCamera();
       return;
     }
@@ -308,11 +402,14 @@ if (!viewerEl) {
     camera.updateProjectionMatrix();
     updateCamera();
   }
+
   window.addEventListener("resize", onResize);
 
   function animate() {
     requestAnimationFrame(animate);
+    updateInertia();
     renderer.render(scene, camera);
   }
+
   animate();
 }

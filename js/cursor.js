@@ -1,6 +1,9 @@
-// js/cursor.js
 (() => {
-  // Ищем готовый элемент, а если его нет — создаём
+  const isTouch =
+    "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+  if (isTouch) return;
+
   let el = document.getElementById("cursorLight");
   if (!el) {
     el = document.createElement("div");
@@ -9,8 +12,6 @@
     document.body.appendChild(el);
   }
 
-  // На всякий: позиционирование должно быть fixed, чтобы работало одинаково везде
-  // (если у тебя уже в CSS задано — ок, это не помешает)
   el.style.position = el.style.position || "fixed";
   el.style.pointerEvents = "none";
 
@@ -19,7 +20,7 @@
   let x = tx;
   let y = ty;
 
-  const lerp = 0.07; // меньше — сильнее отстаёт, больше — ближе к курсору
+  const lerp = 0.07;
 
   window.addEventListener(
     "mousemove",
@@ -27,7 +28,7 @@
       tx = e.clientX;
       ty = e.clientY;
     },
-    { passive: true }
+    { passive: true },
   );
 
   function tick() {
@@ -42,7 +43,6 @@
 
   requestAnimationFrame(tick);
 
-  // Дадим доступ другим скриптам (например main.js для THREE.PointLight)
   window.__cursorLight = {
     get x() {
       return x;

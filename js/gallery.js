@@ -1,9 +1,5 @@
-// ../js/gallery.js
-import { SCULPTURES } from './sculptures-data.js';
+import { SCULPTURES } from "./sculptures-data.js";
 
-// =========================
-// PRELOADER
-// =========================
 const preloader = document.getElementById("preloader");
 const perc = document.getElementById("preloader-perc");
 const fill = document.querySelector(".preloader-bar-fill");
@@ -20,9 +16,6 @@ const t = setInterval(() => {
   }
 }, 35);
 
-// =========================
-// APPLY META TO CARDS
-// =========================
 function getModelKeyFromHref(href) {
   try {
     const url = new URL(href, window.location.href);
