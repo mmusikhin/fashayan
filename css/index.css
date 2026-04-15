@@ -262,7 +262,7 @@
 
   #three-container {
     position: absolute;
-    top: calc(100vh + 520px);
+    top: calc(100vh + 140px);
     left: 50%;
     right: auto;
     transform: translateX(-50%);
@@ -315,7 +315,7 @@
   }
 
   #three-container {
-    top: calc(100vh + 20px);
+    top: calc(100vh + 310px);
     width: 90vw;
     height: 260px;
   }

@@ -5,7 +5,7 @@ const PLACEHOLDER_DESC =
 export const SCULPTURES = {
   turgenev: {
     title: "Тургенев",
-    year: "2023",
+    year: "2015",
     material: "Гипс",
     lightProfile: "white",
     initialYaw: Math.PI,
@@ -18,13 +18,13 @@ export const SCULPTURES = {
 
   children: {
     title: "Дети войны",
-    year: "2022",
+    year: "2010",
     material: "Бронза",
     lightProfile: "dark",
     initialYaw: 0,
     initialPitch: 0.08,
     description:
-      "Бронзовая работа о хрупкости и стойкости. Композиция обращает" +
+      "Бронзовая работа о хрупкости и стойкости. Композиция обращает " +
       "внимание на тех, кто вынес войну в детском возрасте.",
   },
 
@@ -42,7 +42,7 @@ export const SCULPTURES = {
 
   kitel: {
     title: "Китель друга",
-    year: "2020",
+    year: "2018",
     material: "Бронза",
     lightProfile: "bright",
     initialYaw: 0,
@@ -55,7 +55,7 @@ export const SCULPTURES = {
 
   loris: {
     title: "Лорис-Меликов",
-    year: "2024",
+    year: "2018",
     material: "Бронза",
     lightProfile: "dark",
     initialYaw: 0,
@@ -67,21 +67,23 @@ export const SCULPTURES = {
   },
 
   man: {
-    title: "Дружинник",
-    year: "2015",
+    title: "Первый славянин",
+    year: "2006",
     material: "Бронза",
     lightProfile: "dark",
     initialYaw: 0,
     initialPitch: 0.08,
     description:
-      "Бронзовая фигура воина-защитника — собирательный образ стойкости " +
-      "и долга. В пластике ощущается напряжённая готовность встать между опасностью и" +
-      "родной землёй.",
+      "Скульптурный образ, обращённый к истокам " + 
+      "и становлению человека в мире. " + 
+      "Композиция раскрывает момент внутреннего выбора — " +
+      "между действием и осмыслением, создавая образ человека " + 
+      "на границе начала истории и культуры.",
   },
 
   press: {
     title: "Журналистам",
-    year: "2020",
+    year: "2017",
     material: "Бронза",
     lightProfile: "bright",
     initialYaw: 0,
