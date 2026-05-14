@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
 document.getElementById("btn-exit-exhibition").addEventListener("click", () => {
   window.location.href = "gallery.html";
 });
@@ -16,21 +18,29 @@ const infoPanel = document.getElementById("sculpture-info");
 const infoTitle = document.getElementById("info-title");
 const infoText = document.getElementById("info-text");
 const btnExitView = document.getElementById("btn-exit-view");
+const infoToggle = document.getElementById("info-toggle");
 
 const focusMaskEl = document.getElementById("focus-mask");
 const viewHintsEl = document.getElementById("view-hints");
 
 function setViewUI(isOn) {
-  if (focusMaskEl) focusMaskEl.classList.toggle("is-visible", isOn);
-  if (viewHintsEl) viewHintsEl.classList.toggle("is-visible", isOn);
+  if (focusMaskEl && !isMobile) {
+    focusMaskEl.classList.toggle("is-visible", isOn);
+  }
+
+  if (viewHintsEl && !isMobile) {
+    viewHintsEl.classList.toggle("is-visible", isOn);
+  }
 }
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(window.devicePixelRatio || 1);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 container.appendChild(renderer.domElement);
+
+renderer.domElement.style.touchAction = "none";
 
 const manager = new THREE.LoadingManager();
 const loader = new GLTFLoader(manager);
@@ -43,6 +53,28 @@ const mouse = new THREE.Vector2();
 
 const mainCamPos = new THREE.Vector3();
 const mainCamQuat = new THREE.Quaternion();
+
+const galleryLook = {
+  active: false,
+  lastX: 0,
+  startX: 0,
+  moved: false,
+  yaw: 0,
+  minYaw: isMobile ? -0.35 : -0.35,
+  maxYaw: isMobile ? 0.35 : 0.35,
+  speed: 0.0018,
+  baseQuat: new THREE.Quaternion(),
+};
+
+const touchView = {
+  mode: null,
+  lastX: 0,
+  lastY: 0,
+  startX: 0,
+  startY: 0,
+  pinchStartDistance: 0,
+  pinchStartZoom: 0,
+};
 
 const camAnim = {
   active: false,
@@ -98,7 +130,8 @@ const sculpturesConfig = {
   },
   PressMesh: {
     title: "Журналистам",
-    text: "Скульптурная композиция, посвящённая профессии свидетеля и посредника. Работа говорит о личной ответственности за слово и о хрупком балансе между фактом, памятью и временем.",
+    text:
+      "Скульптурная композиция, посвящённая профессии свидетеля и посредника. Работа говорит о личной ответственности за слово и о хрупком балансе между фактом, памятью и временем.",
     light: "M0SPL",
     maxDeltaZ: Infinity,
   },
@@ -115,7 +148,7 @@ let lastPointerX = 0;
 const rotationInertia = {
   velocity: 0,
   damping: 0.95,
-  velocityScale: 0.012,
+  velocityScale: isMobile ? 0.018 : 0.012,
   minStop: 0.00012,
   releaseDeadzone: 0.01,
 };
@@ -129,6 +162,11 @@ const rotationAnim = {
   duration: 0.8,
 };
 
+const mobileGalleryControls = document.getElementById(
+  "mobile-gallery-controls",
+);
+const galleryLookSlider = document.getElementById("gallery-look-slider");
+
 const hoverHint = document.createElement("div");
 hoverHint.id = "hover-hint";
 hoverHint.className = "hover-hint";
@@ -137,26 +175,6 @@ hoverHint.style.position = "absolute";
 hoverHint.style.pointerEvents = "none";
 hoverHint.style.display = "none";
 document.body.appendChild(hoverHint);
-
-function findSculptureKeyByObject(obj) {
-  let cur = obj;
-  while (cur) {
-    for (const [key, data] of Object.entries(sculptures)) {
-      if (data.mesh === cur) return key;
-    }
-    cur = cur.parent;
-  }
-  return null;
-}
-
-function getSculptureWorldAnchor(key) {
-  const obj = sculptures[key];
-  if (!obj) return null;
-  const box = new THREE.Box3().setFromObject(obj.mesh);
-  const center = new THREE.Vector3();
-  box.getCenter(center);
-  return center;
-}
 
 if (preloader) {
   preloader.style.display = "flex";
@@ -180,6 +198,7 @@ loader.load(
     scene = gltf.scene;
 
     let gltfCam = scene.getObjectByName("MainCamera");
+
     if (
       !(gltfCam && gltfCam.isCamera) &&
       gltf.cameras &&
@@ -209,6 +228,8 @@ loader.load(
     mainCamPos.copy(camera.position);
     mainCamQuat.copy(camera.quaternion);
 
+    galleryLook.baseQuat.copy(camera.quaternion);
+
     Object.keys(sculpturesConfig).forEach((key) => {
       const mesh = scene.getObjectByName(key);
       if (!mesh) return;
@@ -217,6 +238,7 @@ loader.load(
       const light = cfg.light ? scene.getObjectByName(cfg.light) : null;
       const lightDefaultIntensity =
         light && typeof light.intensity === "number" ? light.intensity : 1;
+
       if (light) light.intensity = 0;
 
       sculptures[key] = {
@@ -238,8 +260,61 @@ loader.load(
   },
 );
 
+function findSculptureKeyByObject(obj) {
+  let cur = obj;
+
+  while (cur) {
+    for (const [key, data] of Object.entries(sculptures)) {
+      if (data.mesh === cur) return key;
+    }
+
+    cur = cur.parent;
+  }
+
+  return null;
+}
+
+function getSculptureWorldAnchor(key) {
+  const obj = sculptures[key];
+  if (!obj) return null;
+
+  const box = new THREE.Box3().setFromObject(obj.mesh);
+  const center = new THREE.Vector3();
+
+  box.getCenter(center);
+
+  return center;
+}
+
+function getTouchDistance(touches) {
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function getKeyFromScreenPoint(clientX, clientY) {
+  if (!camera || !scene) return null;
+
+  const rect = renderer.domElement.getBoundingClientRect();
+  const x = ((clientX - rect.left) / rect.width) * 2 - 1;
+  const y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+  mouse.set(x, y);
+  raycaster.setFromCamera(mouse, camera);
+
+  const targets = Object.values(sculptures).map((o) => o.mesh);
+  const intersects = raycaster.intersectObjects(targets, true);
+
+  if (intersects.length > 0) {
+    return findSculptureKeyByObject(intersects[0].object);
+  }
+
+  return null;
+}
+
 function startCameraAnimation(toPos, toQuat, duration = 1.2) {
   if (!camera) return;
+
   camAnim.active = true;
   camAnim.duration = duration;
   camAnim.start = performance.now();
@@ -251,16 +326,20 @@ function startCameraAnimation(toPos, toQuat, duration = 1.2) {
 
 function updateCameraAnimation(time) {
   if (!camAnim.active || !camera) return;
+
   const t = Math.min((time - camAnim.start) / (camAnim.duration * 1000), 1);
   const k = t * t * (3 - 2 * t);
+
   camera.position.lerpVectors(camAnim.fromPos, camAnim.toPos, k);
   camera.quaternion.slerpQuaternions(camAnim.fromQuat, camAnim.toQuat, k);
+
   if (t >= 1) camAnim.active = false;
 }
 
 function startRotationReset(key) {
   const obj = sculptures[key];
   if (!obj) return;
+
   rotationAnim.active = true;
   rotationAnim.key = key;
   rotationAnim.fromQuat.copy(obj.mesh.quaternion);
@@ -270,21 +349,27 @@ function startRotationReset(key) {
 
 function updateRotationAnim(time) {
   if (!rotationAnim.active || !rotationAnim.key) return;
+
   const obj = sculptures[rotationAnim.key];
+
   if (!obj) {
     rotationAnim.active = false;
     return;
   }
+
   const t = Math.min(
     (time - rotationAnim.start) / (rotationAnim.duration * 1000),
     1,
   );
+
   const k = t * t * (3 - 2 * t);
+
   obj.mesh.quaternion.slerpQuaternions(
     rotationAnim.fromQuat,
     rotationAnim.toQuat,
     k,
   );
+
   if (t >= 1) {
     rotationAnim.active = false;
     obj.curAngle = 0;
@@ -292,7 +377,8 @@ function updateRotationAnim(time) {
 }
 
 function setHover(key) {
-  if (hoveredKey === key || isViewMode) return;
+  if (hoveredKey === key || isViewMode || isMobile) return;
+
   hoveredKey = key;
 
   Object.entries(sculptures).forEach(([name, obj]) => {
@@ -307,6 +393,7 @@ function setHover(key) {
   }
 
   const worldPos = getSculptureWorldAnchor(key);
+
   if (!worldPos) {
     hoverHint.style.display = "none";
     return;
@@ -314,6 +401,7 @@ function setHover(key) {
 
   const projected = worldPos.clone().project(camera);
   const rect = container.getBoundingClientRect();
+
   const x = (projected.x * 0.5 + 0.5) * rect.width + rect.left;
   const y = (-projected.y * 0.5 + 0.5) * rect.height + rect.top;
 
@@ -328,6 +416,10 @@ function enterViewMode(key) {
 
   activeKey = key;
   isViewMode = true;
+
+  mainCamPos.copy(camera.position);
+  mainCamQuat.copy(camera.quaternion);
+
   document.body.classList.add("view-mode");
   hoverHint.style.display = "none";
 
@@ -338,25 +430,24 @@ function enterViewMode(key) {
   const box = new THREE.Box3().setFromObject(obj.mesh);
   const center = new THREE.Vector3();
   const size = new THREE.Vector3();
+
   box.getCenter(center);
   box.getSize(size);
 
   const radius = size.length() || 1;
-  const dir = new THREE.Vector3()
-    .subVectors(camera.position, center)
-    .normalize();
-  const targetPos = center.clone().add(dir.multiplyScalar(radius * 2.0));
+  const dir = new THREE.Vector3().subVectors(camera.position, center).normalize();
+  const distanceMultiplier = isMobile ? 2.8 : 2.0;
+  const targetPos = center.clone().add(dir.multiplyScalar(radius * distanceMultiplier));
 
   const m = new THREE.Matrix4();
   m.lookAt(targetPos, center, camera.up);
+
   const targetQuat = new THREE.Quaternion().setFromRotationMatrix(m);
 
   viewZoom.target.copy(center);
-  viewZoom.dir.copy(
-    new THREE.Vector3().subVectors(targetPos, center).normalize(),
-  );
+  viewZoom.dir.copy(new THREE.Vector3().subVectors(targetPos, center).normalize());
   viewZoom.distance = targetPos.distanceTo(center);
-  viewZoom.min = Math.max(radius * 0.3, 0.12);
+  viewZoom.min = Math.max(radius * (isMobile ? 0.55 : 0.3), 0.12);
   viewZoom.max = Math.max(radius * 6.0, viewZoom.distance * 2.5);
   viewZoom.active = true;
 
@@ -364,7 +455,9 @@ function enterViewMode(key) {
 
   infoTitle.textContent = obj.config.title;
   infoText.textContent = obj.config.text;
+
   infoPanel.style.display = "block";
+  infoPanel.classList.remove("is-open");
 }
 
 function exitViewMode() {
@@ -374,8 +467,11 @@ function exitViewMode() {
 
   isViewMode = false;
   activeKey = null;
+
   document.body.classList.remove("view-mode");
+
   infoPanel.style.display = "none";
+  infoPanel.classList.remove("is-open");
   hoverHint.style.display = "none";
 
   setViewUI(false);
@@ -397,6 +493,7 @@ function exitViewMode() {
 
 function applyAngleForActive(angle) {
   if (!activeKey) return;
+
   const obj = sculptures[activeKey];
   if (!obj) return;
 
@@ -412,6 +509,7 @@ function applyAngleForActive(angle) {
 
   const axis = new THREE.Vector3(0, 1, 0);
   const q = new THREE.Quaternion().setFromAxisAngle(axis, obj.curAngle);
+
   obj.mesh.quaternion.copy(obj.baseQuat).multiply(q);
 
   if (Number.isFinite(max) && (obj.curAngle === max || obj.curAngle === -max)) {
@@ -424,7 +522,8 @@ function rotateActiveByDrag(dx) {
 
   rotationAnim.active = false;
 
-  const deltaAngle = dx * 0.01;
+  const deltaAngle = dx * (isMobile ? 0.018 : 0.01);
+
   applyAngleForActive(sculptures[activeKey].curAngle + deltaAngle);
 
   rotationInertia.velocity = dx * rotationInertia.velocityScale;
@@ -432,17 +531,36 @@ function rotateActiveByDrag(dx) {
 
 function updateInertia() {
   if (!isViewMode || !activeKey) return;
-  if (isDragging) return;
+  if (isDragging || touchView.mode) return;
   if (rotationAnim.active) return;
 
   const v = rotationInertia.velocity;
+
   if (Math.abs(v) < rotationInertia.minStop) {
     rotationInertia.velocity = 0;
     return;
   }
 
   applyAngleForActive(sculptures[activeKey].curAngle + v);
+
   rotationInertia.velocity *= rotationInertia.damping;
+}
+
+function updateViewZoom() {
+  if (!viewZoom.active || !camera) return;
+
+  if (viewZoom.distance < viewZoom.min) viewZoom.distance = viewZoom.min;
+  if (viewZoom.distance > viewZoom.max) viewZoom.distance = viewZoom.max;
+
+  const newPos = viewZoom.target
+    .clone()
+    .add(viewZoom.dir.clone().multiplyScalar(viewZoom.distance));
+
+  camera.position.copy(newPos);
+
+  const m = new THREE.Matrix4();
+  m.lookAt(camera.position, viewZoom.target, camera.up);
+  camera.quaternion.setFromRotationMatrix(m);
 }
 
 function onWheel(e) {
@@ -453,29 +571,16 @@ function onWheel(e) {
   if (camAnim.active) return;
 
   const dy = e.deltaY || 0;
-
   const factor = Math.exp(dy * viewZoom.speed);
+
   viewZoom.distance *= factor;
 
-  if (viewZoom.distance < viewZoom.min) viewZoom.distance = viewZoom.min;
-  if (viewZoom.distance > viewZoom.max) viewZoom.distance = viewZoom.max;
-
-  const newPos = viewZoom.target
-    .clone()
-    .add(viewZoom.dir.clone().multiplyScalar(viewZoom.distance));
-  camera.position.copy(newPos);
-
-  const m = new THREE.Matrix4();
-  m.lookAt(camera.position, viewZoom.target, camera.up);
-  camera.quaternion.setFromRotationMatrix(m);
+  updateViewZoom();
 }
 
 function onPointerMove(e) {
   if (!camera || !scene) return;
-
-  const rect = renderer.domElement.getBoundingClientRect();
-  const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-  const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  if (e.pointerType === "touch") return;
 
   if (isViewMode) {
     if (isDragging) {
@@ -483,46 +588,94 @@ function onPointerMove(e) {
       lastPointerX = e.clientX;
       rotateActiveByDrag(dx);
     }
+
     return;
   }
 
-  mouse.set(x, y);
-  raycaster.setFromCamera(mouse, camera);
-  const targets = Object.values(sculptures).map((o) => o.mesh);
-
-  const intersects = raycaster.intersectObjects(targets, true);
-  if (intersects.length > 0) {
-    const hitObj = intersects[0].object;
-    const foundKey = findSculptureKeyByObject(hitObj);
-    setHover(foundKey);
-  } else {
-    setHover(null);
-  }
+  const foundKey = getKeyFromScreenPoint(e.clientX, e.clientY);
+  setHover(foundKey);
 }
 
-function onClick() {
+function onClick(e) {
+  if (isMobile) return;
+
   if (!isViewMode && hoveredKey) {
     enterViewMode(hoveredKey);
   }
 }
 
+function applyGalleryLook() {
+  if (!camera || isViewMode || camAnim.active) return;
+
+  if (galleryLook.yaw < galleryLook.minYaw) {
+    galleryLook.yaw = galleryLook.minYaw;
+  }
+
+  if (galleryLook.yaw > galleryLook.maxYaw) {
+    galleryLook.yaw = galleryLook.maxYaw;
+  }
+
+  const yawQuat = new THREE.Quaternion().setFromAxisAngle(
+    new THREE.Vector3(0, 1, 0),
+    galleryLook.yaw,
+  );
+
+  camera.position.copy(mainCamPos);
+  camera.quaternion.copy(galleryLook.baseQuat).premultiply(yawQuat);
+
+  if (galleryLookSlider) {
+const normalized =
+  100 -
+  ((galleryLook.yaw - galleryLook.minYaw) /
+    (galleryLook.maxYaw - galleryLook.minYaw)) *
+    200;
+
+galleryLookSlider.value = String(Math.round(normalized));
+  }
+}
+
+function lookGalleryBy(dx) {
+  if (!camera || isViewMode || camAnim.active) return;
+
+  galleryLook.yaw -= dx * galleryLook.speed;
+  applyGalleryLook();
+}
+
+if (galleryLookSlider) {
+  galleryLookSlider.addEventListener("input", () => {
+    const value = Number(galleryLookSlider.value);
+
+    galleryLook.yaw =
+      galleryLook.minYaw +
+      ((100 - value) / 200) * (galleryLook.maxYaw - galleryLook.minYaw);
+
+    applyGalleryLook();
+  });
+}
+
 renderer.domElement.addEventListener("pointermove", onPointerMove);
 renderer.domElement.addEventListener("click", onClick);
-
 renderer.domElement.addEventListener("wheel", onWheel, { passive: false });
 
-renderer.domElement.addEventListener("pointerdown", (e) => {
-  if (e.button !== 0) return;
-  if (isViewMode) {
-    isDragging = true;
-    lastPointerX = e.clientX;
+renderer.domElement.addEventListener(
+  "pointerdown",
+  (e) => {
+    if (e.pointerType === "touch") return;
 
-    rotationInertia.velocity = 0;
-  }
-});
+    if (e.button !== 0) return;
+
+    if (isViewMode) {
+      isDragging = true;
+      lastPointerX = e.clientX;
+      rotationInertia.velocity = 0;
+    }
+  },
+  { passive: false },
+);
 
 window.addEventListener("pointerup", () => {
   isDragging = false;
+
   if (Math.abs(rotationInertia.velocity) < rotationInertia.releaseDeadzone) {
     rotationInertia.velocity = 0;
   }
@@ -532,22 +685,257 @@ renderer.domElement.addEventListener("pointerleave", () => {
   if (!isViewMode) setHover(null);
 });
 
+renderer.domElement.addEventListener(
+  "touchstart",
+  (e) => {
+    e.preventDefault();
+
+    if (!camera) return;
+
+    if (!isViewMode) {
+      if (e.touches.length === 1) {
+        galleryLook.active = true;
+        galleryLook.lastX = e.touches[0].clientX;
+        galleryLook.startX = e.touches[0].clientX;
+        galleryLook.moved = false;
+      }
+
+      return;
+    }
+
+    if (e.touches.length === 1) {
+      touchView.mode = "rotate";
+      touchView.lastX = e.touches[0].clientX;
+      touchView.lastY = e.touches[0].clientY;
+      touchView.startX = e.touches[0].clientX;
+      touchView.startY = e.touches[0].clientY;
+      rotationInertia.velocity = 0;
+    }
+
+    if (e.touches.length === 2) {
+      touchView.mode = "zoom";
+      touchView.pinchStartDistance = getTouchDistance(e.touches);
+      touchView.pinchStartZoom = viewZoom.distance;
+    }
+  },
+  { passive: false },
+);
+
+renderer.domElement.addEventListener(
+  "touchmove",
+  (e) => {
+    e.preventDefault();
+
+    if (!camera) return;
+
+    if (!isViewMode) {
+      if (galleryLook.active && e.touches.length === 1) {
+        const x = e.touches[0].clientX;
+        const dx = x - galleryLook.lastX;
+
+        galleryLook.lastX = x;
+
+        if (Math.abs(x - galleryLook.startX) > 8) {
+          galleryLook.moved = true;
+        }
+
+        lookGalleryBy(dx);
+      }
+
+      return;
+    }
+
+    if (camAnim.active) return;
+
+    if (touchView.mode === "rotate" && e.touches.length === 1) {
+      const touch = e.touches[0];
+      const dx = touch.clientX - touchView.lastX;
+
+      touchView.lastX = touch.clientX;
+      touchView.lastY = touch.clientY;
+
+      rotateActiveByDrag(dx);
+
+      return;
+    }
+
+    if (touchView.mode === "zoom" && e.touches.length === 2) {
+      const currentDistance = getTouchDistance(e.touches);
+
+      if (touchView.pinchStartDistance > 0) {
+        const zoomFactor = touchView.pinchStartDistance / currentDistance;
+
+        viewZoom.distance = touchView.pinchStartZoom * zoomFactor;
+
+        updateViewZoom();
+      }
+    }
+  },
+  { passive: false },
+);
+
+renderer.domElement.addEventListener(
+  "touchend",
+  (e) => {
+    e.preventDefault();
+
+    if (!isViewMode) {
+      if (
+        galleryLook.active &&
+        !galleryLook.moved &&
+        e.changedTouches.length > 0
+      ) {
+        const touch = e.changedTouches[0];
+        const key = getKeyFromScreenPoint(touch.clientX, touch.clientY);
+
+        if (key) {
+          enterViewMode(key);
+        }
+      }
+
+      if (e.touches.length === 0) {
+        galleryLook.active = false;
+      }
+
+      return;
+    }
+
+    if (e.touches.length === 0) {
+      touchView.mode = null;
+
+      if (Math.abs(rotationInertia.velocity) < rotationInertia.releaseDeadzone) {
+        rotationInertia.velocity = 0;
+      }
+    }
+
+    if (e.touches.length === 1) {
+      touchView.mode = "rotate";
+      touchView.lastX = e.touches[0].clientX;
+      touchView.lastY = e.touches[0].clientY;
+    }
+  },
+  { passive: false },
+);
+
+renderer.domElement.addEventListener(
+  "touchmove",
+  (e) => {
+    e.preventDefault();
+
+    if (!camera) return;
+
+    if (!isViewMode) {
+      if (galleryLook.active && e.touches.length === 1) {
+        const x = e.touches[0].clientX;
+        const dx = x - galleryLook.lastX;
+
+        galleryLook.lastX = x;
+
+        if (Math.abs(x - galleryLook.startX) > 8) {
+          galleryLook.moved = true;
+        }
+
+        panGalleryBy(dx);
+      }
+
+      return;
+    }
+
+    if (camAnim.active) return;
+
+    if (touchView.mode === "rotate" && e.touches.length === 1) {
+      const touch = e.touches[0];
+      const dx = touch.clientX - touchView.lastX;
+
+      touchView.lastX = touch.clientX;
+      touchView.lastY = touch.clientY;
+
+      rotateActiveByDrag(dx);
+
+      return;
+    }
+
+    if (touchView.mode === "zoom" && e.touches.length === 2) {
+      const currentDistance = getTouchDistance(e.touches);
+
+      if (touchView.pinchStartDistance > 0) {
+        const zoomFactor = touchView.pinchStartDistance / currentDistance;
+
+        viewZoom.distance = touchView.pinchStartZoom * zoomFactor;
+
+        updateViewZoom();
+      }
+    }
+  },
+  { passive: false },
+);
+
+renderer.domElement.addEventListener(
+  "touchend",
+  (e) => {
+    e.preventDefault();
+
+    if (!isViewMode) {
+      if (galleryLook.active && !galleryLook.moved && e.changedTouches.length > 0) {
+        const touch = e.changedTouches[0];
+        const key = getKeyFromScreenPoint(touch.clientX, touch.clientY);
+
+        if (key) {
+          enterViewMode(key);
+        }
+      }
+
+      if (e.touches.length === 0) {
+        galleryLook.active = false;
+      }
+
+      return;
+    }
+
+    if (e.touches.length === 0) {
+      touchView.mode = null;
+
+      if (Math.abs(rotationInertia.velocity) < rotationInertia.releaseDeadzone) {
+        rotationInertia.velocity = 0;
+      }
+    }
+
+    if (e.touches.length === 1) {
+      touchView.mode = "rotate";
+      touchView.lastX = e.touches[0].clientX;
+      touchView.lastY = e.touches[0].clientY;
+    }
+  },
+  { passive: false },
+);
+
 btnExitView.addEventListener("click", () => {
   exitViewMode();
 });
 
+if (infoToggle && infoPanel) {
+  infoToggle.addEventListener("click", () => {
+    infoPanel.classList.toggle("is-open");
+  });
+}
+
 function onResize() {
   if (!camera) return;
+
   const w = container.clientWidth;
   const h = container.clientHeight;
+
   renderer.setSize(w, h);
+
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 }
+
 window.addEventListener("resize", onResize);
 
 function animate(time = 0) {
   requestAnimationFrame(animate);
+
   if (!scene || !camera) return;
 
   updateCameraAnimation(time);

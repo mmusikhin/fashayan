@@ -184,6 +184,29 @@
   transition: opacity 0.15s ease;
 }
 
+#exhibition-container,
+#exhibition-container canvas {
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+
+.info-toggle {
+  display: none;
+}
+
+#btn-exit-view {
+  margin-top: 18px;
+  display: none;
+}
+
+body.view-mode #btn-exit-view {
+  display: inline-flex;
+}
+
+.mobile-gallery-controls {
+  display: none;
+}
+
 @media (max-width: 768px) {
   #btn-exit-exhibition {
     top: 80px;
@@ -192,25 +215,127 @@
     padding: 10px 18px;
   }
 
+  .focus-mask {
+    display: none;
+  }
+
+  .view-hints {
+    display: none !important;
+  }
+
+  .hover-hint {
+    display: none !important;
+  }
+
   #sculpture-info {
+    display: none;
     left: 16px;
     right: 16px;
     top: auto;
     bottom: 16px;
     transform: none;
     max-width: none;
+
+    padding: 0;
+    overflow: hidden;
+    border-radius: 18px;
+    background: rgba(5, 5, 5, 0.82);
+    backdrop-filter: blur(14px);
   }
 
-  .view-hints {
-    left: 16px;
-    right: 16px;
-    top: auto;
-    bottom: 170px;
-    transform: none;
-    align-items: flex-start;
+  .info-toggle {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    text-align: left;
+
+    cursor: pointer;
+  }
+
+  .info-toggle::after {
+    content: "＋";
+    float: right;
+    opacity: 0.8;
+  }
+
+  #sculpture-info.is-open .info-toggle::after {
+    content: "−";
+  }
+
+  .info-content {
+    display: none;
+    padding: 0 16px 18px;
+  }
+
+  #sculpture-info.is-open .info-content {
+    display: block;
+  }
+
+  #info-title.info-title {
+    font-size: 22px;
+  }
+
+  #info-text.info-text {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  #btn-exit-view {
+    width: calc(100% - 32px);
+    margin: 0 16px 16px;
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  #sculpture-info.is-open + #btn-exit-view {
+    bottom: 230px;
   }
 
   .site-footer {
     padding: 16px 20px;
+  }
+
+  .mobile-gallery-controls {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 18px;
+    z-index: 80;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    padding: 14px 16px;
+    border-radius: 18px;
+
+    background: rgba(5, 5, 5, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(14px);
+  }
+
+  body.view-mode .mobile-gallery-controls {
+    display: none;
+  }
+
+  .mobile-gallery-hint {
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.86);
+    text-align: center;
+  }
+
+  .gallery-look-slider {
+    width: 100%;
+    accent-color: #ffffff;
   }
 }
