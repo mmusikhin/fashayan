@@ -170,7 +170,7 @@ const hoverHint = document.createElement("div");
 hoverHint.id = "hover-hint";
 hoverHint.className = "hover-hint";
 hoverHint.textContent = "Нажмите, чтобы рассмотреть";
-hoverHint.style.position = "absolute";
+hoverHint.style.position = "fixed";
 hoverHint.style.pointerEvents = "none";
 hoverHint.style.display = "none";
 document.body.appendChild(hoverHint);
@@ -509,10 +509,28 @@ function setHover(key) {
 
   const x = (projected.x * 0.5 + 0.5) * rect.width + rect.left;
   const y = (-projected.y * 0.5 + 0.5) * rect.height + rect.top;
+  const viewportGap = 16;
 
-  hoverHint.style.left = `${x}px`;
-  hoverHint.style.top = `${y}px`;
   hoverHint.style.display = "block";
+
+  const hintWidth = hoverHint.offsetWidth;
+  const hintHeight = hoverHint.offsetHeight;
+  const maxX = Math.max(
+    viewportGap,
+    window.innerWidth - hintWidth - viewportGap,
+  );
+  const maxY = Math.max(
+    viewportGap,
+    window.innerHeight - hintHeight - viewportGap,
+  );
+  const clampedX = Math.min(
+    Math.max(x - hintWidth / 2, viewportGap),
+    maxX,
+  );
+  const clampedY = Math.min(Math.max(y, viewportGap), maxY);
+
+  hoverHint.style.left = `${clampedX}px`;
+  hoverHint.style.top = `${clampedY}px`;
 }
 
 function enterViewMode(key) {
