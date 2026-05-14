@@ -26,10 +26,7 @@
     <div class="cursor-light" id="cursorLight"></div>
 
     <main>
-      <section
-        class="content-section"
-        style="margin-top: 40px; max-width: 1200px"
-      >
+      <section class="content-section">
         <h1 class="section-title">Биография</h1>
 
         <div class="bio-hero">
@@ -43,7 +40,7 @@
 
           <div class="bio-hero-body">
             <h2 class="bio-name">Фашаян Роман Олегович</h2>
-            <p class="bio-subtitle section-text" style="margin: 0 0 18px">
+            <p class="bio-subtitle section-text">
               Российский скульптор, преподаватель Института цифрового дизайна
               МИЭТа, заслуженный художник Российской Федерации.
             </p>
@@ -141,7 +138,7 @@
           aria-label="Фотографии Романа Фашаяна"
         >
           <div class="photo-gallery-head">
-            <h3 class="card-title" style="margin: 0">Фотографии</h3>
+            <h3 class="card-title">Фотографии</h3>
           </div>
 
           <div class="photo-gallery-shell">
@@ -273,7 +270,7 @@
           </aside>
         </div>
 
-        <div class="card" style="margin-top: 22px">
+        <div class="card family-card">
           <h3 class="card-title">Семья</h3>
           <ul class="bullets">
             <li>Жена — Ольга Борисовна Фашаян, художник.</li>
@@ -331,145 +328,6 @@
     </div>
 
     <script src="../js/cursor.js"></script>
-
-    <script>
-      (function () {
-        const lb = document.getElementById("lightbox");
-        const lbImg = document.getElementById("lightboxImg");
-        const lbCap = document.getElementById("lightboxCaption");
-        const thumbs = Array.from(
-          document.querySelectorAll(".photo-strip .photo"),
-        );
-        const btnPrev = document.querySelector(".lightbox__nav--prev");
-        const btnNext = document.querySelector(".lightbox__nav--next");
-        const strip = document.getElementById("photoStrip");
-        const stripPrev = document.querySelector(".photo-strip-nav--prev");
-        const stripNext = document.querySelector(".photo-strip-nav--next");
-
-        if (!lb || !lbImg || !thumbs.length) return;
-
-        const items = thumbs
-          .map((btn) => ({
-            src: btn.getAttribute("data-full") || btn.querySelector("img")?.src,
-            alt:
-              btn.getAttribute("data-alt") ||
-              btn.querySelector("img")?.alt ||
-              "",
-          }))
-          .filter((x) => x.src);
-
-        let idx = 0;
-        let startX = 0;
-        let startY = 0;
-        let isDown = false;
-
-        function render() {
-          const it = items[idx];
-          lbImg.src = it.src;
-          lbImg.alt = it.alt || "";
-          if (lbCap) lbCap.textContent = it.alt || "";
-        }
-
-        function openAt(i) {
-          idx = (i + items.length) % items.length;
-          render();
-          lb.classList.add("is-open");
-          lb.setAttribute("aria-hidden", "false");
-          document.body.classList.add("no-scroll");
-        }
-
-        function close() {
-          lb.classList.remove("is-open");
-          lb.setAttribute("aria-hidden", "true");
-          lbImg.src = "";
-          if (lbCap) lbCap.textContent = "";
-          document.body.classList.remove("no-scroll");
-        }
-
-        function next() {
-          idx = (idx + 1) % items.length;
-          render();
-        }
-
-        function prev() {
-          idx = (idx - 1 + items.length) % items.length;
-          render();
-        }
-
-        function scrollStrip(direction) {
-          if (!strip) return;
-          const card = strip.querySelector(".photo");
-          const step = card ? card.getBoundingClientRect().width + 12 : 280;
-          strip.scrollBy({ left: direction * step, behavior: "smooth" });
-        }
-
-        thumbs.forEach((btn, i) => {
-          btn.addEventListener("click", () => openAt(i));
-        });
-
-        lb.addEventListener("click", (e) => {
-          const t = e.target;
-          if (t && t.getAttribute && t.getAttribute("data-close") === "1")
-            close();
-        });
-
-        if (btnNext)
-          btnNext.addEventListener("click", (e) => {
-            e.stopPropagation();
-            next();
-          });
-
-        if (btnPrev)
-          btnPrev.addEventListener("click", (e) => {
-            e.stopPropagation();
-            prev();
-          });
-
-        if (stripNext) {
-          stripNext.addEventListener("click", () => scrollStrip(1));
-        }
-
-        if (stripPrev) {
-          stripPrev.addEventListener("click", () => scrollStrip(-1));
-        }
-
-        document.addEventListener("keydown", (e) => {
-          if (lb.classList.contains("is-open")) {
-            if (e.key === "Escape") close();
-            if (e.key === "ArrowRight") next();
-            if (e.key === "ArrowLeft") prev();
-            return;
-          }
-
-          if (e.key === "ArrowRight") scrollStrip(1);
-          if (e.key === "ArrowLeft") scrollStrip(-1);
-        });
-
-        lb.addEventListener("pointerdown", (e) => {
-          if (!lb.classList.contains("is-open")) return;
-          isDown = true;
-          startX = e.clientX;
-          startY = e.clientY;
-        });
-
-        lb.addEventListener("pointerup", (e) => {
-          if (!lb.classList.contains("is-open")) return;
-          if (!isDown) return;
-          isDown = false;
-
-          const dx = e.clientX - startX;
-          const dy = e.clientY - startY;
-
-          if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.2) {
-            if (dx < 0) next();
-            else prev();
-          }
-        });
-
-        lb.addEventListener("pointercancel", () => {
-          isDown = false;
-        });
-      })();
-    </script>
+    <script src="../js/sculptor.js"></script>
   </body>
 </html>

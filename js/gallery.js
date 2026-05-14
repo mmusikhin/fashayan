@@ -4,23 +4,27 @@ const preloader = document.getElementById("preloader");
 const perc = document.getElementById("preloader-perc");
 const fill = document.querySelector(".preloader-bar-fill");
 
-let p = 0;
-const t = setInterval(() => {
-  p = Math.min(100, p + 4);
-  if (perc) perc.textContent = `${p}%`;
-  if (fill) fill.style.width = `${p}%`;
-  if (p >= 100) {
-    clearInterval(t);
-    preloader?.classList.add("preloader-hidden");
-    setTimeout(() => preloader?.remove(), 450);
-  }
-}, 35);
+if (preloader) {
+  let progress = 0;
+  const timer = setInterval(() => {
+    progress = Math.min(100, progress + 4);
+
+    if (perc) perc.textContent = `${progress}%`;
+    if (fill) fill.style.width = `${progress}%`;
+
+    if (progress >= 100) {
+      clearInterval(timer);
+      preloader.classList.add("preloader-hidden");
+      setTimeout(() => preloader.remove(), 450);
+    }
+  }, 35);
+}
 
 function getModelKeyFromHref(href) {
   try {
     const url = new URL(href, window.location.href);
     return (url.searchParams.get("model") || "").toLowerCase();
-  } catch (e) {
+  } catch {
     return "";
   }
 }

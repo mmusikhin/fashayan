@@ -80,8 +80,6 @@ body {
   color: var(--muted-text);
 }
 
-/* HEADER */
-
 .site-header {
   position: fixed;
   top: 0;
@@ -136,8 +134,6 @@ body {
 .nav-link.active {
   border-color: var(--border-color);
 }
-
-/* MAIN */
 
 main {
   padding: calc(var(--header-height) + 40px) 40px 40px;
@@ -218,8 +214,6 @@ main {
   margin: 0 0 20px;
 }
 
-/* CURSOR LIGHT */
-
 .cursor-light {
   position: fixed;
   pointer-events: none;
@@ -243,8 +237,6 @@ main {
   mix-blend-mode: screen;
 }
 
-/* FOOTER */
-
 .site-footer {
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   padding: 20px 40px 24px;
@@ -264,8 +256,6 @@ main {
   font-size: 14px;
   color: var(--muted-text);
 }
-
-/* ADAPTIVE */
 
 @media (max-width: 1200px) {
   .logo {

@@ -42,14 +42,16 @@
       </nav>
     </header>
 
-    <button class="btn-outline" id="btn-back">Назад в галерею</button>
+    <button class="btn-outline" id="btn-back" type="button">
+      Назад в галерею
+    </button>
 
     <main>
       <section class="content-section sculpture-page">
         <div class="viewer-wrap">
           <div id="viewer" class="viewer"></div>
 
-          <div class="viewer-error" id="viewer-error" style="display: none">
+          <div class="viewer-error" id="viewer-error">
             Не удалось загрузить модель. Проверь путь к GLB в assets/ и имя
             файла.
           </div>
@@ -59,20 +61,20 @@
 
     <div id="focus-mask" class="focus-mask" aria-hidden="true"></div>
 
-<div id="sculpture-info" class="sculpture-info" aria-hidden="true">
-  <button id="info-toggle" class="info-toggle" type="button">
-    Описание скульптуры
-  </button>
+    <div id="sculpture-info" class="sculpture-info" aria-hidden="true">
+      <button id="info-toggle" class="info-toggle" type="button">
+        Описание скульптуры
+      </button>
 
-  <div class="info-content">
-    <h2 id="info-title" class="info-title">
-      <span id="sc-title">Скульптура</span>
-    </h2>
-    <p id="info-text" class="info-text">
-      <span id="sc-sub">— • — • 3D</span>
-    </p>
-  </div>
-</div>
+      <div class="info-content">
+        <h2 id="info-title" class="info-title">
+          <span id="sc-title">Скульптура</span>
+        </h2>
+        <p id="info-text" class="info-text">
+          <span id="sc-sub">— • — • 3D</span>
+        </p>
+      </div>
+    </div>
 
     <div id="view-hints" class="view-hints" aria-hidden="true">
       <div class="view-hint-item">
@@ -87,66 +89,5 @@
     </div>
 
     <script type="module" src="../js/sculpture.js"></script>
-
-<script>
-  (function () {
-    const viewer = document.getElementById("viewer");
-    const mask = document.getElementById("focus-mask");
-    const info = document.getElementById("sculpture-info");
-    const hints = document.getElementById("view-hints");
-    const btnBack = document.getElementById("btn-back");
-    const infoToggle = document.getElementById("info-toggle");
-
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
-    function showUI() {
-      if (mask && !isMobile) {
-        mask.classList.add("is-visible");
-      }
-
-      if (hints && !isMobile) {
-        hints.classList.add("is-visible");
-      }
-
-      if (info) {
-        info.style.display = "block";
-        info.setAttribute("aria-hidden", "false");
-      }
-    }
-
-    function once(fn) {
-      let done = false;
-      return function () {
-        if (done) return;
-        done = true;
-        fn();
-      };
-    }
-
-    const showOnce = once(showUI);
-
-    if (viewer) {
-      viewer.addEventListener("pointerdown", showOnce, { passive: true });
-      viewer.addEventListener("wheel", showOnce, { passive: true });
-      viewer.addEventListener("touchstart", showOnce, { passive: true });
-    }
-
-    window.addEventListener("sculpture:modelLoaded", showOnce, {
-      once: true,
-    });
-
-    if (infoToggle && info) {
-      infoToggle.addEventListener("click", function () {
-        info.classList.toggle("is-open");
-      });
-    }
-
-    if (btnBack) {
-      btnBack.addEventListener("click", function () {
-        window.location.href = "gallery.html";
-      });
-    }
-  })();
-</script>
   </body>
 </html>

@@ -179,7 +179,7 @@ body.page-sculpture {
 .viewer-error {
   position: fixed;
   inset: 0;
-  display: grid;
+  display: none;
   place-items: center;
   padding: 22px;
   text-align: center;
@@ -279,6 +279,6 @@ body.page-sculpture {
   }
 
   .info-toggle {
-  display: block;
-}
+    display: block;
+  }
 }

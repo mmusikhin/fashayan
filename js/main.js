@@ -12,7 +12,6 @@ let currentRotationY = 0;
 let baseY = 0;
 
 let cursorLight = null;
-let spotLight = null;
 
 const preloader = document.getElementById("preloader");
 const preloaderFill = preloader?.querySelector(".preloader-bar-fill");
@@ -109,14 +108,6 @@ function init() {
       });
 
       scene.add(model);
-
-      if (spotLight) {
-        const targetPos = new THREE.Vector3();
-        model.updateWorldMatrix(true, true);
-        model.getWorldPosition(targetPos);
-        targetPos.y += 0.4;
-        spotLight.target.position.copy(targetPos);
-      }
 
       setLoadingProgress(1);
       hidePreloader();

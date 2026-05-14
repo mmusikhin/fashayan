@@ -2,6 +2,11 @@
   padding-bottom: 28px;
 }
 
+.page-sculptor .content-section {
+  margin-top: 40px;
+  max-width: 1200px;
+}
+
 .page-sculptor .bio-hero {
   display: grid;
   grid-template-columns: 420px 1fr;
@@ -172,6 +177,10 @@
   margin-bottom: 14px;
 }
 
+.page-sculptor .photo-gallery-head .card-title {
+  margin: 0;
+}
+
 .page-sculptor .photo-gallery-shell {
   display: grid;
   grid-template-columns: 52px minmax(0, 1fr) 52px;
@@ -289,6 +298,10 @@
 
 .page-sculptor .bullets li:last-child {
   margin-bottom: 0;
+}
+
+.page-sculptor .family-card {
+  margin-top: 22px;
 }
 
 .no-scroll {

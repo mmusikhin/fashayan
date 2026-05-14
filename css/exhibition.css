@@ -295,10 +295,6 @@ body.view-mode #btn-exit-view {
     padding: 10px 16px;
   }
 
-  #sculpture-info.is-open + #btn-exit-view {
-    bottom: 230px;
-  }
-
   .site-footer {
     padding: 16px 20px;
   }

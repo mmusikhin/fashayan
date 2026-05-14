@@ -3,16 +3,16 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-document.getElementById("btn-exit-exhibition").addEventListener("click", () => {
+const btnExitExhibition = document.getElementById("btn-exit-exhibition");
+
+btnExitExhibition?.addEventListener("click", () => {
   window.location.href = "gallery.html";
 });
 
 const container = document.getElementById("exhibition-container");
 const preloader = document.getElementById("preloader");
 const preloaderPerc = document.getElementById("preloader-perc");
-const preloaderFill = preloader
-  ? preloader.querySelector(".preloader-bar-fill")
-  : null;
+const preloaderFill = preloader?.querySelector(".preloader-bar-fill");
 
 const infoPanel = document.getElementById("sculpture-info");
 const infoTitle = document.getElementById("info-title");
@@ -34,7 +34,9 @@ function setViewUI(isOn) {
 }
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(isMobile ? 1.2 : Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(
+  isMobile ? 2 : Math.min(window.devicePixelRatio || 1, 2),
+);
 renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -50,6 +52,7 @@ let camera = null;
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+const lodWorldPosition = new THREE.Vector3();
 
 const mainCamPos = new THREE.Vector3();
 const mainCamQuat = new THREE.Quaternion();
@@ -60,8 +63,8 @@ const galleryLook = {
   startX: 0,
   moved: false,
   yaw: 0,
-  minYaw: isMobile ? -0.35 : -0.35,
-  maxYaw: isMobile ? 0.35 : 0.35,
+  minYaw: -0.35,
+  maxYaw: 0.35,
   speed: 0.0018,
   baseQuat: new THREE.Quaternion(),
 };
@@ -69,9 +72,6 @@ const galleryLook = {
 const touchView = {
   mode: null,
   lastX: 0,
-  lastY: 0,
-  startX: 0,
-  startY: 0,
   pinchStartDistance: 0,
   pinchStartZoom: 0,
 };
@@ -108,7 +108,7 @@ const sculpturesConfig = {
     title: "Китель друга",
     text:
       "Бронзовая композиция о памяти и присутствии человека через вещь. " +
-      "Китель здесь — не просто форма, а знак службы, дружбы и уважения. ",
+      "Китель здесь — не просто форма, а знак службы, дружбы и уважения.",
     light: "KSL",
     maxDeltaZ: Math.PI / 4,
   },
@@ -116,7 +116,7 @@ const sculpturesConfig = {
     title: "Лорис-Меликов",
     text:
       "Бронзовый портретный образ, построенный на сдержанности и внутренней собранности. " +
-      "Скульптура воспринимается как размышление о государственной ответственности, служении и цене решений. ",
+      "Скульптура воспринимается как размышление о государственной ответственности, служении и цене решений.",
     light: "M2SPL",
     maxDeltaZ: Infinity,
   },
@@ -138,6 +138,8 @@ const sculpturesConfig = {
 };
 
 const sculptures = {};
+
+const MIN_LOD_DETAIL_DISTANCE = 1.5;
 
 let hoveredKey = null;
 let activeKey = null;
@@ -162,9 +164,6 @@ const rotationAnim = {
   duration: 0.8,
 };
 
-const mobileGalleryControls = document.getElementById(
-  "mobile-gallery-controls",
-);
 const galleryLookSlider = document.getElementById("gallery-look-slider");
 
 const hoverHint = document.createElement("div");
@@ -234,8 +233,8 @@ loader.load(
     galleryLook.baseQuat.copy(camera.quaternion);
 
     Object.keys(sculpturesConfig).forEach((key) => {
-      const mesh = scene.getObjectByName(key);
-      if (!mesh) return;
+      const lodData = createSculptureLod(scene, key);
+      if (!lodData) return;
 
       const cfg = sculpturesConfig[key];
       const light = cfg.light ? scene.getObjectByName(cfg.light) : null;
@@ -245,13 +244,15 @@ loader.load(
       if (light) light.intensity = 0;
 
       sculptures[key] = {
-        mesh,
+        ...lodData,
         light,
         lightDefaultIntensity,
-        baseQuat: mesh.quaternion.clone(),
+        baseQuat: lodData.mesh.quaternion.clone(),
         curAngle: 0,
         config: cfg,
       };
+
+      setSculptureDetail(sculptures[key], "low");
     });
 
     animate();
@@ -262,6 +263,107 @@ loader.load(
     if (preloader) preloader.style.display = "none";
   },
 );
+
+function createSculptureLod(root, key) {
+  const high = root.getObjectByName(key);
+  if (!high) return null;
+
+  const low = root.getObjectByName(`${key}_d`);
+
+  if (!low) {
+    return {
+      high,
+      low: null,
+      mesh: high,
+      lod: null,
+      raycastTarget: high,
+    };
+  }
+
+  const parent = high.parent || root;
+  const lod = new THREE.LOD();
+
+  lod.name = `${key}_lod`;
+  lod.autoUpdate = false;
+  lod.position.copy(high.position);
+  lod.quaternion.copy(high.quaternion);
+  lod.scale.copy(high.scale);
+  parent.add(lod);
+
+  high.removeFromParent();
+  high.position.set(0, 0, 0);
+  high.quaternion.identity();
+  high.scale.set(1, 1, 1);
+  lod.addLevel(high, 0);
+
+  lod.attach(low);
+
+  const box = new THREE.Box3().setFromObject(lod);
+  const size = new THREE.Vector3();
+  box.getSize(size);
+
+  const switchDistance = Math.max(
+    size.length() * (isMobile ? 3.05 : 2.35),
+    MIN_LOD_DETAIL_DISTANCE,
+  );
+
+  lod.addLevel(low, switchDistance);
+
+  return {
+    high,
+    low,
+    mesh: lod,
+    lod,
+    switchDistance,
+    raycastTarget: low,
+  };
+}
+
+function setSculptureDetail(obj, mode) {
+  if (!obj) return;
+
+  const showHigh = mode === "high" || !obj.low;
+
+  if (obj.high) obj.high.visible = showHigh;
+  if (obj.low) obj.low.visible = !showHigh;
+
+  obj.raycastTarget = showHigh ? obj.high : obj.low || obj.high || obj.mesh;
+}
+
+function setActiveSculptureDetail(key) {
+  Object.entries(sculptures).forEach(([name, obj]) => {
+    setSculptureDetail(
+      obj,
+      name === key ? getSculptureDetailMode(obj) : "low",
+    );
+  });
+}
+
+function setOverviewSculptureDetails() {
+  Object.values(sculptures).forEach((obj) => {
+    setSculptureDetail(obj, "low");
+  });
+}
+
+function getSculptureDetailMode(obj) {
+  if (!camera || !obj?.lod) return "high";
+
+  obj.mesh.getWorldPosition(lodWorldPosition);
+
+  const distance = camera.position.distanceTo(lodWorldPosition);
+  const detailObject = obj.lod.getObjectForDistance(distance);
+
+  return detailObject === obj.high ? "high" : "low";
+}
+
+function updateActiveSculptureDetail() {
+  if (!isViewMode || !activeKey) return;
+
+  setSculptureDetail(
+    sculptures[activeKey],
+    getSculptureDetailMode(sculptures[activeKey]),
+  );
+}
 
 function findSculptureKeyByObject(obj) {
   let cur = obj;
@@ -305,7 +407,7 @@ function getKeyFromScreenPoint(clientX, clientY) {
   mouse.set(x, y);
   raycaster.setFromCamera(mouse, camera);
 
-  const targets = Object.values(sculptures).map((o) => o.mesh);
+  const targets = Object.values(sculptures).map((o) => o.raycastTarget);
   const intersects = raycaster.intersectObjects(targets, true);
 
   if (intersects.length > 0) {
@@ -417,6 +519,8 @@ function enterViewMode(key) {
   const obj = sculptures[key];
   if (!obj || !camera) return;
 
+  setActiveSculptureDetail(key);
+
   activeKey = key;
   isViewMode = true;
 
@@ -440,7 +544,9 @@ function enterViewMode(key) {
   const radius = size.length() || 1;
   const dir = new THREE.Vector3().subVectors(camera.position, center).normalize();
   const distanceMultiplier = isMobile ? 2.8 : 2.0;
-  const targetPos = center.clone().add(dir.multiplyScalar(radius * distanceMultiplier));
+  const targetPos = center
+    .clone()
+    .add(dir.multiplyScalar(radius * distanceMultiplier));
 
   const m = new THREE.Matrix4();
   m.lookAt(targetPos, center, camera.up);
@@ -448,7 +554,9 @@ function enterViewMode(key) {
   const targetQuat = new THREE.Quaternion().setFromRotationMatrix(m);
 
   viewZoom.target.copy(center);
-  viewZoom.dir.copy(new THREE.Vector3().subVectors(targetPos, center).normalize());
+  viewZoom.dir.copy(
+    new THREE.Vector3().subVectors(targetPos, center).normalize(),
+  );
   viewZoom.distance = targetPos.distanceTo(center);
   viewZoom.min = Math.max(radius * (isMobile ? 0.55 : 0.3), 0.12);
   viewZoom.max = Math.max(radius * 6.0, viewZoom.distance * 2.5);
@@ -491,6 +599,7 @@ function exitViewMode() {
     startRotationReset(keyToReset);
   }
 
+  setOverviewSculptureDetails();
   startCameraAnimation(mainCamPos, mainCamQuat, 1.3);
 }
 
@@ -599,7 +708,7 @@ function onPointerMove(e) {
   setHover(foundKey);
 }
 
-function onClick(e) {
+function onClick() {
   if (isMobile) return;
 
   if (!isViewMode && hoveredKey) {
@@ -627,13 +736,13 @@ function applyGalleryLook() {
   camera.quaternion.copy(galleryLook.baseQuat).premultiply(yawQuat);
 
   if (galleryLookSlider) {
-const normalized =
-  100 -
-  ((galleryLook.yaw - galleryLook.minYaw) /
-    (galleryLook.maxYaw - galleryLook.minYaw)) *
-    200;
+    const normalized =
+      100 -
+      ((galleryLook.yaw - galleryLook.minYaw) /
+        (galleryLook.maxYaw - galleryLook.minYaw)) *
+        200;
 
-galleryLookSlider.value = String(Math.round(normalized));
+    galleryLookSlider.value = String(Math.round(normalized));
   }
 }
 
@@ -709,9 +818,6 @@ renderer.domElement.addEventListener(
     if (e.touches.length === 1) {
       touchView.mode = "rotate";
       touchView.lastX = e.touches[0].clientX;
-      touchView.lastY = e.touches[0].clientY;
-      touchView.startX = e.touches[0].clientX;
-      touchView.startY = e.touches[0].clientY;
       rotationInertia.velocity = 0;
     }
 
@@ -737,6 +843,7 @@ renderer.domElement.addEventListener(
         const dx = x - galleryLook.lastX;
 
         galleryLook.lastX = x;
+        lookGalleryBy(dx);
 
         if (Math.abs(x - galleryLook.startX) > 8) {
           galleryLook.moved = true;
@@ -753,7 +860,6 @@ renderer.domElement.addEventListener(
       const dx = touch.clientX - touchView.lastX;
 
       touchView.lastX = touch.clientX;
-      touchView.lastY = touch.clientY;
 
       rotateActiveByDrag(dx);
 
@@ -781,7 +887,11 @@ renderer.domElement.addEventListener(
     e.preventDefault();
 
     if (!isViewMode) {
-      if (galleryLook.active && !galleryLook.moved && e.changedTouches.length > 0) {
+      if (
+        galleryLook.active &&
+        !galleryLook.moved &&
+        e.changedTouches.length > 0
+      ) {
         const touch = e.changedTouches[0];
         const key = getKeyFromScreenPoint(touch.clientX, touch.clientY);
 
@@ -808,13 +918,12 @@ renderer.domElement.addEventListener(
     if (e.touches.length === 1) {
       touchView.mode = "rotate";
       touchView.lastX = e.touches[0].clientX;
-      touchView.lastY = e.touches[0].clientY;
     }
   },
   { passive: false },
 );
 
-btnExitView.addEventListener("click", () => {
+btnExitView?.addEventListener("click", () => {
   exitViewMode();
 });
 
@@ -850,6 +959,7 @@ function animate(time = 0) {
   lastRenderTime = time;
 
   updateCameraAnimation(time);
+  updateActiveSculptureDetail();
   updateRotationAnim(time);
   updateInertia();
 

@@ -12,6 +12,7 @@ const preloaderPerc = document.getElementById("preloader-perc");
 
 const maskEl = document.getElementById("focus-mask");
 const infoEl = document.getElementById("sculpture-info");
+const infoToggle = document.getElementById("info-toggle");
 const hintsEl = document.getElementById("view-hints");
 
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
@@ -52,6 +53,12 @@ if (btnBack) {
   });
 }
 
+if (infoToggle && infoEl) {
+  infoToggle.addEventListener("click", () => {
+    infoEl.classList.toggle("is-open");
+  });
+}
+
 const params = new URLSearchParams(window.location.search);
 const modelKey = (params.get("model") || "man").toLowerCase();
 
@@ -65,19 +72,9 @@ const meta = SCULPTURES[modelKey] || {
   zoomInMultiplier: 0.7,
 };
 
-const PLACEHOLDER_DESC =
+const DEFAULT_DESCRIPTION =
   "Бронзовая фигура воина-защитника — собирательный образ стойкости и долга. " +
   "В пластике ощущается напряжённая готовность встать между опасностью и родной землёй.";
-
-const DESCRIPTIONS = {
-  turgenev: PLACEHOLDER_DESC,
-  children: PLACEHOLDER_DESC,
-  fish: PLACEHOLDER_DESC,
-  kitel: PLACEHOLDER_DESC,
-  loris: PLACEHOLDER_DESC,
-  man: PLACEHOLDER_DESC,
-  press: PLACEHOLDER_DESC,
-};
 
 const titleEl =
   document.getElementById("sc-title") || document.getElementById("info-title");
@@ -86,26 +83,9 @@ const subEl =
 const textEl =
   document.getElementById("sc-text") || document.getElementById("info-text");
 
-const uiRoot =
-  document.querySelector(".sculpture-ui") ||
-  document.querySelector(".viewer-ui") ||
-  document.querySelector(".page-sculpture") ||
-  document.body;
-
 if (titleEl) titleEl.textContent = meta.title;
 if (subEl) subEl.textContent = `${meta.year} • ${meta.material} • 3D`;
-if (textEl) {
-  textEl.textContent =
-    meta.description || DESCRIPTIONS[modelKey] || PLACEHOLDER_DESC;
-}
-
-let uiActivated = false;
-
-function activateUI() {
-  if (uiActivated) return;
-  uiActivated = true;
-  if (uiRoot && uiRoot.classList) uiRoot.classList.add("is-active");
-}
+if (textEl) textEl.textContent = meta.description || DEFAULT_DESCRIPTION;
 
 const glbPath = `../assets/${modelKey}.glb`;
 
@@ -351,8 +331,6 @@ if (!viewerEl) {
   renderer.domElement.addEventListener(
     "pointerdown",
     (e) => {
-      activateUI();
-
       if (e.pointerType === "touch") return;
 
       if (e.button === 0) {
@@ -427,7 +405,6 @@ if (!viewerEl) {
   renderer.domElement.addEventListener(
     "touchstart",
     (e) => {
-      activateUI();
       e.preventDefault();
 
       if (e.touches.length === 1) {
@@ -500,7 +477,6 @@ if (!viewerEl) {
   renderer.domElement.addEventListener(
     "wheel",
     (e) => {
-      activateUI();
       e.preventDefault();
 
       const dy = e.deltaY || 0;
