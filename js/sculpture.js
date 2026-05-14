@@ -14,9 +14,11 @@ const maskEl = document.getElementById("focus-mask");
 const infoEl = document.getElementById("sculpture-info");
 const hintsEl = document.getElementById("view-hints");
 
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
 function revealOverlayUI() {
-  if (maskEl) maskEl.classList.add("is-visible");
-  if (hintsEl) hintsEl.classList.add("is-visible");
+  if (maskEl && !isMobile) maskEl.classList.add("is-visible");
+  if (hintsEl && !isMobile) hintsEl.classList.add("is-visible");
 
   if (infoEl) {
     infoEl.style.display = "block";
@@ -52,6 +54,7 @@ if (btnBack) {
 
 const params = new URLSearchParams(window.location.search);
 const modelKey = (params.get("model") || "man").toLowerCase();
+
 const meta = SCULPTURES[modelKey] || {
   title: "Скульптура",
   year: "—",
@@ -61,6 +64,7 @@ const meta = SCULPTURES[modelKey] || {
   initialPitch: 0.08,
   zoomInMultiplier: 0.7,
 };
+
 const PLACEHOLDER_DESC =
   "Бронзовая фигура воина-защитника — собирательный образ стойкости и долга. " +
   "В пластике ощущается напряжённая готовность встать между опасностью и родной землёй.";
@@ -96,6 +100,7 @@ if (textEl) {
 }
 
 let uiActivated = false;
+
 function activateUI() {
   if (uiActivated) return;
   uiActivated = true;
@@ -112,11 +117,13 @@ if (!viewerEl) {
   scene.background = new THREE.Color(0x000000);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-  renderer.setPixelRatio(window.devicePixelRatio || 1);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(viewerEl.clientWidth, viewerEl.clientHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   viewerEl.appendChild(renderer.domElement);
+
+  renderer.domElement.style.touchAction = "none";
 
   const camera = new THREE.PerspectiveCamera(
     50,
@@ -213,7 +220,7 @@ if (!viewerEl) {
     target: new THREE.Vector3(0, 0, 0),
     yaw: typeof meta.initialYaw === "number" ? meta.initialYaw : 0,
     pitch: typeof meta.initialPitch === "number" ? meta.initialPitch : 0.08,
-    distance: 2.8,
+    distance: isMobile ? 3.6 : 2.8,
     min: 0.2,
     max: 50,
   };
@@ -221,7 +228,7 @@ if (!viewerEl) {
   const rotationInertia = {
     velocity: 0,
     damping: 0.95,
-    velocityScale: 0.01,
+    velocityScale: isMobile ? 0.018 : 0.01,
     minStop: 0.00012,
     releaseDeadzone: 0.01,
   };
@@ -248,9 +255,10 @@ if (!viewerEl) {
 
   function updateInertia() {
     if (!model) return;
-    if (isLmb) return;
+    if (isLmb || touchMode) return;
 
     const v = rotationInertia.velocity;
+
     if (Math.abs(v) < rotationInertia.minStop) {
       rotationInertia.velocity = 0;
       return;
@@ -279,7 +287,13 @@ if (!viewerEl) {
       scene.add(model);
 
       const radius = Math.max(size.x, size.y, size.z) * 0.55 || 1;
-      orbit.distance = Math.max(radius * 2.4, 1.2);
+      const mobileDistanceMultiplier = 3.1;
+      const desktopDistanceMultiplier = 2.4;
+
+      orbit.distance = Math.max(
+        radius * (isMobile ? mobileDistanceMultiplier : desktopDistanceMultiplier),
+        1.2,
+      );
 
       const zoomInMultiplier =
         typeof meta.zoomInMultiplier === "number" ? meta.zoomInMultiplier : 0.7;
@@ -319,16 +333,42 @@ if (!viewerEl) {
   let lastX = 0;
   let lastY = 0;
 
-  renderer.domElement.addEventListener("pointerdown", (e) => {
-    activateUI();
-    if (e.button === 0) {
-      isLmb = true;
-      rotationInertia.velocity = 0;
-    }
-    if (e.button === 2) isRmb = true;
-    lastX = e.clientX;
-    lastY = e.clientY;
-  });
+  let touchMode = null;
+  let pinchStartDistance = 0;
+  let pinchStartZoom = 0;
+
+  function getTouchDistance(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function clampZoom() {
+    if (orbit.distance < orbit.min) orbit.distance = orbit.min;
+    if (orbit.distance > orbit.max) orbit.distance = orbit.max;
+  }
+
+  renderer.domElement.addEventListener(
+    "pointerdown",
+    (e) => {
+      activateUI();
+
+      if (e.pointerType === "touch") return;
+
+      if (e.button === 0) {
+        isLmb = true;
+        rotationInertia.velocity = 0;
+      }
+
+      if (e.button === 2) {
+        isRmb = true;
+      }
+
+      lastX = e.clientX;
+      lastY = e.clientY;
+    },
+    { passive: false },
+  );
 
   window.addEventListener("pointerup", () => {
     isLmb = false;
@@ -339,42 +379,123 @@ if (!viewerEl) {
     }
   });
 
-  renderer.domElement.addEventListener("pointermove", (e) => {
-    if (!model) return;
+  renderer.domElement.addEventListener(
+    "pointermove",
+    (e) => {
+      if (!model) return;
+      if (e.pointerType === "touch") return;
 
-    if (isLmb || isRmb) activateUI();
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
 
-    const dx = e.clientX - lastX;
-    const dy = e.clientY - lastY;
-    lastX = e.clientX;
-    lastY = e.clientY;
+      lastX = e.clientX;
+      lastY = e.clientY;
 
-    if (isLmb) {
-      orbit.yaw -= dx * 0.01;
-      rotationInertia.velocity = -dx * rotationInertia.velocityScale;
-      updateCamera();
-      return;
-    }
+      if (isLmb) {
+        orbit.yaw -= dx * 0.01;
+        rotationInertia.velocity = -dx * rotationInertia.velocityScale;
+        updateCamera();
+        return;
+      }
 
-    if (isRmb) {
-      const dir = new THREE.Vector3();
-      camera.getWorldDirection(dir);
+      if (isRmb) {
+        const dir = new THREE.Vector3();
+        camera.getWorldDirection(dir);
 
-      const right = new THREE.Vector3()
-        .crossVectors(dir, camera.up)
-        .normalize();
-      const up = new THREE.Vector3().crossVectors(right, dir).normalize();
+        const right = new THREE.Vector3()
+          .crossVectors(dir, camera.up)
+          .normalize();
 
-      const panScale = orbit.distance * 0.0012;
+        const up = new THREE.Vector3()
+          .crossVectors(right, dir)
+          .normalize();
 
-      const pan = new THREE.Vector3()
-        .addScaledVector(right, -dx * panScale)
-        .addScaledVector(up, dy * panScale);
+        const panScale = orbit.distance * 0.0012;
 
-      orbit.target.add(pan);
-      updateCamera();
-    }
-  });
+        const pan = new THREE.Vector3()
+          .addScaledVector(right, -dx * panScale)
+          .addScaledVector(up, dy * panScale);
+
+        orbit.target.add(pan);
+
+        updateCamera();
+      }
+    },
+    { passive: false },
+  );
+
+  renderer.domElement.addEventListener(
+    "touchstart",
+    (e) => {
+      activateUI();
+      e.preventDefault();
+
+      if (e.touches.length === 1) {
+        touchMode = "rotate";
+        rotationInertia.velocity = 0;
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+      }
+
+      if (e.touches.length === 2) {
+        touchMode = "zoom";
+        pinchStartDistance = getTouchDistance(e.touches);
+        pinchStartZoom = orbit.distance;
+      }
+    },
+    { passive: false },
+  );
+
+  renderer.domElement.addEventListener(
+    "touchmove",
+    (e) => {
+      if (!model) return;
+
+      e.preventDefault();
+
+      if (touchMode === "rotate" && e.touches.length === 1) {
+        const touch = e.touches[0];
+
+        const dx = touch.clientX - lastX;
+
+        lastX = touch.clientX;
+        lastY = touch.clientY;
+
+        orbit.yaw -= dx * 0.018;
+        rotationInertia.velocity = -dx * 0.0018;
+
+        updateCamera();
+      }
+
+      if (touchMode === "zoom" && e.touches.length === 2) {
+        const currentDistance = getTouchDistance(e.touches);
+
+        if (pinchStartDistance > 0) {
+          const zoomFactor = pinchStartDistance / currentDistance;
+          orbit.distance = pinchStartZoom * zoomFactor;
+          clampZoom();
+          updateCamera();
+        }
+      }
+    },
+    { passive: false },
+  );
+
+  renderer.domElement.addEventListener(
+    "touchend",
+    (e) => {
+      if (e.touches.length === 0) {
+        touchMode = null;
+      }
+
+      if (e.touches.length === 1) {
+        touchMode = "rotate";
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+      }
+    },
+    { passive: false },
+  );
 
   renderer.domElement.addEventListener(
     "wheel",
@@ -384,11 +505,10 @@ if (!viewerEl) {
 
       const dy = e.deltaY || 0;
       const factor = Math.exp(dy * 0.0012);
+
       orbit.distance *= factor;
 
-      if (orbit.distance < orbit.min) orbit.distance = orbit.min;
-      if (orbit.distance > orbit.max) orbit.distance = orbit.max;
-
+      clampZoom();
       updateCamera();
     },
     { passive: false },
@@ -397,9 +517,12 @@ if (!viewerEl) {
   function onResize() {
     const w = viewerEl.clientWidth;
     const h = viewerEl.clientHeight;
+
     renderer.setSize(w, h);
+
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+
     updateCamera();
   }
 
