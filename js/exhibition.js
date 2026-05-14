@@ -34,13 +34,10 @@ function setViewUI(isOn) {
 }
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(isMobile ? 1.25 : Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(isMobile ? 1.2 : Math.min(window.devicePixelRatio || 1, 2));
 renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-//renderer.toneMapping = isMobile
-//  ? THREE.NoToneMapping
-//  : THREE.ACESFilmicToneMapping;
 container.appendChild(renderer.domElement);
 
 renderer.domElement.style.touchAction = "none";
@@ -744,8 +741,6 @@ renderer.domElement.addEventListener(
         if (Math.abs(x - galleryLook.startX) > 8) {
           galleryLook.moved = true;
         }
-
-        lookGalleryBy(dx);
       }
 
       return;
@@ -775,49 +770,6 @@ renderer.domElement.addEventListener(
 
         updateViewZoom();
       }
-    }
-  },
-  { passive: false },
-);
-
-renderer.domElement.addEventListener(
-  "touchend",
-  (e) => {
-    e.preventDefault();
-
-    if (!isViewMode) {
-      if (
-        galleryLook.active &&
-        !galleryLook.moved &&
-        e.changedTouches.length > 0
-      ) {
-        const touch = e.changedTouches[0];
-        const key = getKeyFromScreenPoint(touch.clientX, touch.clientY);
-
-        if (key) {
-          enterViewMode(key);
-        }
-      }
-
-      if (e.touches.length === 0) {
-        galleryLook.active = false;
-      }
-
-      return;
-    }
-
-    if (e.touches.length === 0) {
-      touchView.mode = null;
-
-      if (Math.abs(rotationInertia.velocity) < rotationInertia.releaseDeadzone) {
-        rotationInertia.velocity = 0;
-      }
-    }
-
-    if (e.touches.length === 1) {
-      touchView.mode = "rotate";
-      touchView.lastX = e.touches[0].clientX;
-      touchView.lastY = e.touches[0].clientY;
     }
   },
   { passive: false },
