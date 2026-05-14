@@ -34,10 +34,12 @@ function setViewUI(isOn) {
 }
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2));
 renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMapping = isMobile
+  ? THREE.NoToneMapping
+  : THREE.ACESFilmicToneMapping;
 container.appendChild(renderer.domElement);
 
 renderer.domElement.style.touchAction = "none";
@@ -175,6 +177,9 @@ hoverHint.style.position = "absolute";
 hoverHint.style.pointerEvents = "none";
 hoverHint.style.display = "none";
 document.body.appendChild(hoverHint);
+
+let lastRenderTime = 0;
+const mobileFrameInterval = 1000 / 30;
 
 if (preloader) {
   preloader.style.display = "flex";
@@ -818,59 +823,6 @@ renderer.domElement.addEventListener(
 );
 
 renderer.domElement.addEventListener(
-  "touchmove",
-  (e) => {
-    e.preventDefault();
-
-    if (!camera) return;
-
-    if (!isViewMode) {
-      if (galleryLook.active && e.touches.length === 1) {
-        const x = e.touches[0].clientX;
-        const dx = x - galleryLook.lastX;
-
-        galleryLook.lastX = x;
-
-        if (Math.abs(x - galleryLook.startX) > 8) {
-          galleryLook.moved = true;
-        }
-
-        panGalleryBy(dx);
-      }
-
-      return;
-    }
-
-    if (camAnim.active) return;
-
-    if (touchView.mode === "rotate" && e.touches.length === 1) {
-      const touch = e.touches[0];
-      const dx = touch.clientX - touchView.lastX;
-
-      touchView.lastX = touch.clientX;
-      touchView.lastY = touch.clientY;
-
-      rotateActiveByDrag(dx);
-
-      return;
-    }
-
-    if (touchView.mode === "zoom" && e.touches.length === 2) {
-      const currentDistance = getTouchDistance(e.touches);
-
-      if (touchView.pinchStartDistance > 0) {
-        const zoomFactor = touchView.pinchStartDistance / currentDistance;
-
-        viewZoom.distance = touchView.pinchStartZoom * zoomFactor;
-
-        updateViewZoom();
-      }
-    }
-  },
-  { passive: false },
-);
-
-renderer.domElement.addEventListener(
   "touchend",
   (e) => {
     e.preventDefault();
@@ -937,6 +889,12 @@ function animate(time = 0) {
   requestAnimationFrame(animate);
 
   if (!scene || !camera) return;
+
+  if (isMobile && time - lastRenderTime < mobileFrameInterval) {
+    return;
+  }
+
+  lastRenderTime = time;
 
   updateCameraAnimation(time);
   updateRotationAnim(time);
