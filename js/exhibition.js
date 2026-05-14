@@ -34,7 +34,7 @@ function setViewUI(isOn) {
 }
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(isMobile ? 2 : Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(isMobile ? 1.75 : Math.min(window.devicePixelRatio || 1, 2));
 renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = isMobile
