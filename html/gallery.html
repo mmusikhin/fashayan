@@ -1,84 +1,188 @@
 <!doctype html>
 <html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Галерея — Музей Романа Фашаяна</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Forum&family=Manrope:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
 
-<head>
-  <meta charset="utf-8">
-  <title>Галерея — Музей Романа Фашаяна</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Forum&family=Manrope:wght@400;500;600&display=swap"
-    rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/gallery.css" />
+  </head>
 
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
-    }
-  }
-  </script>
+  <body class="page-gallery">
+    <header class="site-header">
+      <div class="logo">МУЗЕЙ РОМАНА ФАШАЯНА</div>
+      <nav class="main-nav">
+        <a href="../index.html" class="nav-link">Главная</a>
+        <a href="gallery.html" class="nav-link active">Галерея</a>
+        <a href="sculptor.html" class="nav-link">Биография</a>
+      </nav>
+    </header>
 
-  <link rel="stylesheet" href="../css/style.css">
-</head>
+    <div class="cursor-light" id="cursorLight"></div>
 
-<body class="page-gallery">
+    <main>
+      <section class="content-section gallery-wide" style="margin-top: 40px">
+        <h1 class="section-title">Галерея работ</h1>
 
-  <div id="preloader" class="preloader">
-    <div class="preloader-inner">
-      <div class="preloader-title">ГАЛЕРЕЯ</div>
-      <div class="preloader-bar">
-        <div class="preloader-bar-fill"></div>
+        <div class="exhibition-card exhibition-hero">
+          <h2 class="grid-title">Защитникам Русской Земли</h2>
+          <p class="grid-text">
+            Монументальная серия скульптур, посвященная героям и защитникам
+            Отечества. Коллекция представляет собой уникальное сочетание
+            традиционной русской скульптурной школы и современных художественных
+            решений.
+          </p>
+          <a href="exhibition.html" class="btn-outline btn-inline"
+            >Посмотреть выставку в 3D</a
+          >
+        </div>
+        <div class="exhibition-card">
+          <h2 class="grid-title">Все работы</h2>
+
+          <div class="works-grid">
+            <a
+              class="work-card"
+              href="sculpture.html?model=turgenev"
+              aria-label="Открыть скульптуру: Тургенев"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/turgenev.png"
+                  alt="Скульптура: Тургенев"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Тургенев</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=children"
+              aria-label="Открыть скульптуру: Дети войны"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/children.png"
+                  alt="Скульптура: Дети войны"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Дети войны</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=fish"
+              aria-label="Открыть скульптуру: Рыба"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/fish.png"
+                  alt="Скульптура: Рыба"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Рыба</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=kitel"
+              aria-label="Открыть скульптуру: Китель"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/kitel.png"
+                  alt="Скульптура: Китель"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Китель</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=loris"
+              aria-label="Открыть скульптуру: Лорис-Меликов"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/loris.png"
+                  alt="Скульптура: Лорис-Меликов"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Лорис-Меликов</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=man"
+              aria-label="Открыть скульптуру: Дружинник"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/man.png"
+                  alt="Скульптура: Дружинник"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Первый славянин</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+
+            <a
+              class="work-card"
+              href="sculpture.html?model=press"
+              aria-label="Открыть скульптуру: Пресс"
+            >
+              <div class="work-thumb">
+                <img
+                  src="../assets/png/press.png"
+                  alt="Скульптура: Пресс"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-meta">
+                <div class="work-title">Пресс</div>
+                <div class="work-sub">— • — • 3D</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <span>© Музей Романа Фашаяна</span>
+        <span>Цифровая галерея скульптуры</span>
       </div>
-      <div class="preloader-perc" id="preloader-perc">0%</div>
-    </div>
-  </div>
+    </footer>
 
-  <header class="site-header">
-    <div class="logo">
-      МУЗЕЙ РОМАНА ФАШАЯНА
-    </div>
-    <nav class="main-nav">
-      <a href="index.html" class="nav-link">Главная</a>
-      <a href="gallery.html" class="nav-link active">Галерея</a>
-      <a href="sculptor.html" class="nav-link">О скульпторе</a>
-      <a href="process.html" class="nav-link">Процесс создания</a>
-    </nav>
-  </header>
-
-  <div id="three-container"></div>
-
-  <main>
-    <section class="content-section" style="margin-top: 40px;">
-      <h1 class="section-title">Галерея работ</h1>
-
-      <div class="exhibition-card">
-        <h2 class="grid-title">Защитникам земли русской</h2>
-        <p class="grid-text">
-          Монументальная серия скульптур, посвященная героям и защитникам Отечества.
-          Коллекция представляет собой уникальное сочетание традиционной русской
-          скульптурной школы и современных художественных решений.
-        </p>
-        <a href="exhibition.html" class="btn-outline btn-inline">Посмотреть выставку в 3D</a>
-      </div>
-
-      <div class="exhibition-card">
-        <h2 class="grid-title">Все работы</h2>
-        <p class="grid-text">
-          Полное собрание произведений Романа Фашаяна. Раздел находится в разработке
-          и будет содержать все работы скульптора, организованные по хронологии и темам.
-        </p>
-        <button class="btn-outline btn-inline" disabled>Скоро будет доступно</button>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <span>© Музей Романа Фашаяна</span>
-      <span>Цифровая галерея скульптуры</span>
-    </div>
-  </footer>
-
-  <script type="module" src="../js/gallery.js"></script>
-</body>
-
+    <script src="../js/cursor.js"></script>
+    <script type="module" src="../js/gallery.js"></script>
+  </body>
 </html>
