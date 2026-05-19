@@ -33,13 +33,15 @@ function setViewUI(isOn) {
   }
 }
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: !isMobile });
 renderer.setPixelRatio(
-  isMobile ? 1.5 : Math.min(window.devicePixelRatio || 1, 2),
+  isMobile ? 1.25 : Math.min(window.devicePixelRatio || 1, 2),
 );
 renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMapping = isMobile
+  ? THREE.LinearToneMapping
+  : THREE.ACESFilmicToneMapping;
 container.appendChild(renderer.domElement);
 
 renderer.domElement.style.touchAction = "none";
