@@ -39,9 +39,7 @@ renderer.setPixelRatio(
 );
 renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = isMobile
-  ? THREE.LinearToneMapping
-  : THREE.ACESFilmicToneMapping;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
 container.appendChild(renderer.domElement);
 
 renderer.domElement.style.touchAction = "none";
@@ -54,7 +52,6 @@ let camera = null;
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
-const lodWorldPosition = new THREE.Vector3();
 
 const mainCamPos = new THREE.Vector3();
 const mainCamQuat = new THREE.Quaternion();
@@ -86,6 +83,7 @@ const camAnim = {
   toQuat: new THREE.Quaternion(),
   start: 0,
   duration: 1.2,
+  onComplete: null,
 };
 
 const viewZoom = {
@@ -334,10 +332,7 @@ function setSculptureDetail(obj, mode) {
 
 function setActiveSculptureDetail(key) {
   Object.entries(sculptures).forEach(([name, obj]) => {
-    setSculptureDetail(
-      obj,
-      name === key ? getSculptureDetailMode(obj) : "low",
-    );
+    setSculptureDetail(obj, name === key ? "high" : "low");
   });
 }
 
@@ -345,26 +340,6 @@ function setOverviewSculptureDetails() {
   Object.values(sculptures).forEach((obj) => {
     setSculptureDetail(obj, "low");
   });
-}
-
-function getSculptureDetailMode(obj) {
-  if (!camera || !obj?.lod) return "high";
-
-  obj.mesh.getWorldPosition(lodWorldPosition);
-
-  const distance = camera.position.distanceTo(lodWorldPosition);
-  const detailObject = obj.lod.getObjectForDistance(distance);
-
-  return detailObject === obj.high ? "high" : "low";
-}
-
-function updateActiveSculptureDetail() {
-  if (!isViewMode || !activeKey) return;
-
-  setSculptureDetail(
-    sculptures[activeKey],
-    getSculptureDetailMode(sculptures[activeKey]),
-  );
 }
 
 function findSculptureKeyByObject(obj) {
@@ -419,11 +394,12 @@ function getKeyFromScreenPoint(clientX, clientY) {
   return null;
 }
 
-function startCameraAnimation(toPos, toQuat, duration = 1.2) {
+function startCameraAnimation(toPos, toQuat, duration = 1.2, onComplete = null) {
   if (!camera) return;
 
   camAnim.active = true;
   camAnim.duration = duration;
+  camAnim.onComplete = onComplete;
   camAnim.start = performance.now();
   camAnim.fromPos.copy(camera.position);
   camAnim.toPos.copy(toPos);
@@ -440,7 +416,14 @@ function updateCameraAnimation(time) {
   camera.position.lerpVectors(camAnim.fromPos, camAnim.toPos, k);
   camera.quaternion.slerpQuaternions(camAnim.fromQuat, camAnim.toQuat, k);
 
-  if (t >= 1) camAnim.active = false;
+  if (t >= 1) {
+    const onComplete = camAnim.onComplete;
+
+    camAnim.active = false;
+    camAnim.onComplete = null;
+
+    if (onComplete) onComplete();
+  }
 }
 
 function startRotationReset(key) {
@@ -619,8 +602,11 @@ function exitViewMode() {
     startRotationReset(keyToReset);
   }
 
-  setOverviewSculptureDetails();
-  startCameraAnimation(mainCamPos, mainCamQuat, 1.3);
+  startCameraAnimation(mainCamPos, mainCamQuat, 1.3, () => {
+    if (!isViewMode) {
+      setOverviewSculptureDetails();
+    }
+  });
 }
 
 function applyAngleForActive(angle) {
@@ -979,7 +965,6 @@ function animate(time = 0) {
   lastRenderTime = time;
 
   updateCameraAnimation(time);
-  updateActiveSculptureDetail();
   updateRotationAnim(time);
   updateInertia();
 
