@@ -13,8 +13,8 @@
   gap: 26px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 18px;
-  background: rgba(10, 10, 10, 0.55);
-  backdrop-filter: blur(10px);
+  background: rgba(10, 10, 10, 0.38);
+  backdrop-filter: blur(4px) saturate(1.08);
   overflow: hidden;
 }
 
@@ -79,7 +79,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   padding: 12px 14px;
-  background: rgba(5, 5, 5, 0.55);
+  background: rgba(5, 5, 5, 0.38);
 }
 
 .page-sculptor .fact .k {
@@ -106,8 +106,8 @@
 .page-sculptor .card {
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 18px;
-  background: rgba(10, 10, 10, 0.55);
-  backdrop-filter: blur(10px);
+  background: rgba(10, 10, 10, 0.38);
+  backdrop-filter: blur(4px) saturate(1.08);
   padding: 22px 22px 20px;
 }
 
@@ -142,7 +142,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   padding: 12px 14px;
-  background: rgba(5, 5, 5, 0.55);
+  background: rgba(5, 5, 5, 0.38);
 }
 
 .page-sculptor .timeline .year {
@@ -163,8 +163,8 @@
   margin-top: 22px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 18px;
-  background: rgba(10, 10, 10, 0.55);
-  backdrop-filter: blur(10px);
+  background: rgba(10, 10, 10, 0.38);
+  backdrop-filter: blur(4px) saturate(1.08);
   padding: 20px 18px 18px;
   overflow: hidden;
 }
@@ -206,12 +206,12 @@
 
 .page-sculptor .photo-strip-wrap::before {
   left: 0;
-  background: linear-gradient(to right, rgba(5, 5, 5, 0.95), rgba(5, 5, 5, 0));
+  background: linear-gradient(to right, rgba(5, 5, 5, 0.72), rgba(5, 5, 5, 0));
 }
 
 .page-sculptor .photo-strip-wrap::after {
   right: 0;
-  background: linear-gradient(to left, rgba(5, 5, 5, 0.95), rgba(5, 5, 5, 0));
+  background: linear-gradient(to left, rgba(5, 5, 5, 0.72), rgba(5, 5, 5, 0));
 }
 
 .page-sculptor .photo-strip {
@@ -233,7 +233,7 @@
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(10, 10, 10, 0.55);
+  background: rgba(10, 10, 10, 0.38);
   padding: 0;
   cursor: pointer;
   display: block;

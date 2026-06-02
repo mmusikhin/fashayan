@@ -202,7 +202,8 @@ body.page-sculpture {
   overscroll-behavior: contain;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px),
+  (hover: none) and (pointer: coarse) {
   #btn-back {
     top: 80px;
     left: 16px;
@@ -280,5 +281,29 @@ body.page-sculpture {
 
   .info-toggle {
     display: block;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px),
+  (min-width: 769px) and (hover: none) and (pointer: coarse) {
+  #btn-back {
+    left: 24px;
+  }
+
+  #sculpture-info {
+    left: 50%;
+    right: auto;
+    bottom: 24px;
+    width: min(560px, calc(100vw - 48px));
+    transform: translateX(-50%);
+  }
+
+  .info-toggle {
+    text-align: center;
+  }
+
+  .info-toggle::after {
+    float: none;
+    margin-left: 12px;
   }
 }

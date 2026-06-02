@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { createLoadingProgress } from "./loading-progress.js";
 
 const container = document.getElementById("three-container");
 
@@ -16,22 +17,18 @@ let cursorLight = null;
 const preloader = document.getElementById("preloader");
 const preloaderFill = preloader?.querySelector(".preloader-bar-fill");
 const preloaderPerc = document.getElementById("preloader-perc");
+const loadingProgress = createLoadingProgress({
+  preloader,
+  fill: preloaderFill,
+  perc: preloaderPerc,
+});
 
 function setLoadingProgress(progress) {
-  if (!preloader) return;
-  const clamped = Math.max(0, Math.min(progress, 1));
-  const percent = Math.round(clamped * 100);
-  if (preloaderFill) preloaderFill.style.width = `${percent}%`;
-  if (preloaderPerc) preloaderPerc.textContent = `${percent}%`;
+  loadingProgress.set(progress);
 }
 
 function hidePreloader() {
-  if (!preloader) return;
-  preloader.classList.add("preloader-hidden");
-  setTimeout(() => {
-    if (preloader && preloader.parentNode)
-      preloader.parentNode.removeChild(preloader);
-  }, 500);
+  loadingProgress.hide();
 }
 
 init();
@@ -58,6 +55,7 @@ function init() {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1;
+  renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
   const ambient = new THREE.AmbientLight(0xffffff, 5);

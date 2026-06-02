@@ -207,7 +207,8 @@ body.view-mode #btn-exit-view {
   display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px),
+  (hover: none) and (pointer: coarse) {
   #btn-exit-exhibition {
     top: 80px;
     left: 16px;
@@ -323,6 +324,7 @@ body.view-mode #btn-exit-view {
   }
 
   .mobile-gallery-hint {
+    display: none;
     font-family: var(--font-body);
     font-size: 14px;
     line-height: 1.35;
@@ -333,5 +335,31 @@ body.view-mode #btn-exit-view {
   .gallery-look-slider {
     width: 100%;
     accent-color: #ffffff;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px),
+  (min-width: 769px) and (hover: none) and (pointer: coarse) {
+  #btn-exit-exhibition {
+    left: 24px;
+  }
+
+  #sculpture-info,
+  .mobile-gallery-controls {
+    left: 50%;
+    right: auto;
+    bottom: 24px;
+    width: min(560px, calc(100vw - 48px));
+    transform: translateX(-50%);
+  }
+
+  .info-toggle,
+  .mobile-gallery-hint {
+    text-align: center;
+  }
+
+  .info-toggle::after {
+    float: none;
+    margin-left: 12px;
   }
 }

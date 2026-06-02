@@ -31,8 +31,8 @@
 
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.32);
-  background: rgba(10, 10, 10, 0.55);
-  backdrop-filter: blur(10px);
+  background: rgba(10, 10, 10, 0.38);
+  backdrop-filter: blur(4px) saturate(1.08);
 
   overflow: hidden;
   transition:
@@ -44,7 +44,7 @@
 .work-card:hover {
   transform: translateY(-3px);
   border-color: rgba(255, 255, 255, 0.62);
-  background: rgba(12, 12, 12, 0.62);
+  background: rgba(12, 12, 12, 0.46);
 }
 
 .work-thumb {

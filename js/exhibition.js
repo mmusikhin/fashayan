@@ -1,7 +1,14 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { createLoadingProgress } from "./loading-progress.js";
 
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
+const isTouchLike = window.matchMedia(
+  "(hover: none) and (pointer: coarse)",
+).matches;
+const isCompactLayout = window.matchMedia(
+  "(max-width: 1024px), (hover: none) and (pointer: coarse)",
+).matches;
 
 const btnExitExhibition = document.getElementById("btn-exit-exhibition");
 
@@ -13,6 +20,11 @@ const container = document.getElementById("exhibition-container");
 const preloader = document.getElementById("preloader");
 const preloaderPerc = document.getElementById("preloader-perc");
 const preloaderFill = preloader?.querySelector(".preloader-bar-fill");
+const loadingProgress = createLoadingProgress({
+  preloader,
+  fill: preloaderFill,
+  perc: preloaderPerc,
+});
 
 const infoPanel = document.getElementById("sculpture-info");
 const infoTitle = document.getElementById("info-title");
@@ -24,11 +36,11 @@ const focusMaskEl = document.getElementById("focus-mask");
 const viewHintsEl = document.getElementById("view-hints");
 
 function setViewUI(isOn) {
-  if (focusMaskEl && !isMobile) {
+  if (focusMaskEl && !isCompactLayout) {
     focusMaskEl.classList.toggle("is-visible", isOn);
   }
 
-  if (viewHintsEl && !isMobile) {
+  if (viewHintsEl && !isCompactLayout) {
     viewHintsEl.classList.toggle("is-visible", isOn);
   }
 }
@@ -56,14 +68,25 @@ const mouse = new THREE.Vector2();
 const mainCamPos = new THREE.Vector3();
 const mainCamQuat = new THREE.Quaternion();
 
+function getGalleryYawLimit() {
+  const width = window.innerWidth || document.documentElement.clientWidth || 0;
+
+  if (width <= 768) return 0.35;
+  if (width <= 1180) return Math.max(0.18, 0.34 - (width - 768) * 0.00047);
+
+  return 0.35;
+}
+
+const initialGalleryYawLimit = getGalleryYawLimit();
+
 const galleryLook = {
   active: false,
   lastX: 0,
   startX: 0,
   moved: false,
   yaw: 0,
-  minYaw: -0.35,
-  maxYaw: 0.35,
+  minYaw: -initialGalleryYawLimit,
+  maxYaw: initialGalleryYawLimit,
   speed: 0.0018,
   baseQuat: new THREE.Quaternion(),
 };
@@ -110,7 +133,8 @@ const sculpturesConfig = {
       "Бронзовая композиция о памяти и присутствии человека через вещь. " +
       "Китель здесь — не просто форма, а знак службы, дружбы и уважения.",
     light: "KSL",
-    maxDeltaZ: Math.PI / 4,
+    minDeltaZ: -Math.PI / 3,
+    maxDeltaZ: Math.PI / 6,
   },
   Loris: {
     title: "Лорис-Меликов",
@@ -178,20 +202,12 @@ document.body.appendChild(hoverHint);
 let lastRenderTime = 0;
 const mobileFrameInterval = 1000 / 30;
 
-if (preloader) {
-  preloader.style.display = "flex";
-  if (preloaderFill) preloaderFill.style.width = "0%";
-  if (preloaderPerc) preloaderPerc.textContent = "0%";
-}
-
 manager.onProgress = (_url, loaded, total) => {
-  const p = total ? (loaded / total) * 100 : 0;
-  if (preloaderFill) preloaderFill.style.width = `${p}%`;
-  if (preloaderPerc) preloaderPerc.textContent = `${Math.round(p)}%`;
+  loadingProgress.set(total ? loaded / total : 0.5);
 };
 
 manager.onLoad = () => {
-  if (preloader) preloader.style.display = "none";
+  loadingProgress.set(0.96);
 };
 
 loader.load(
@@ -256,11 +272,12 @@ loader.load(
     });
 
     animate();
+    requestAnimationFrame(() => loadingProgress.hide());
   },
   undefined,
   (err) => {
     console.error("GLB load error", err);
-    if (preloader) preloader.style.display = "none";
+    loadingProgress.hide();
   },
 );
 
@@ -467,7 +484,7 @@ function updateRotationAnim(time) {
 }
 
 function setHover(key) {
-  if (hoveredKey === key || isViewMode || isMobile) return;
+  if (hoveredKey === key || isViewMode || isMobile || isTouchLike) return;
 
   hoveredKey = key;
 
@@ -546,7 +563,7 @@ function enterViewMode(key) {
 
   const radius = size.length() || 1;
   const dir = new THREE.Vector3().subVectors(camera.position, center).normalize();
-  const distanceMultiplier = isMobile ? 2.8 : 2.0;
+  const distanceMultiplier = isCompactLayout ? 2.8 : 2.0;
   const targetPos = center
     .clone()
     .add(dir.multiplyScalar(radius * distanceMultiplier));
@@ -561,7 +578,7 @@ function enterViewMode(key) {
     new THREE.Vector3().subVectors(targetPos, center).normalize(),
   );
   viewZoom.distance = targetPos.distanceTo(center);
-  viewZoom.min = Math.max(radius * (isMobile ? 0.55 : 0.3), 0.12);
+  viewZoom.min = Math.max(radius * (isCompactLayout ? 0.55 : 0.3), 0.12);
   viewZoom.max = Math.max(radius * 6.0, viewZoom.distance * 2.5);
   viewZoom.active = true;
 
@@ -616,12 +633,16 @@ function applyAngleForActive(angle) {
   if (!obj) return;
 
   const max = obj.config.maxDeltaZ;
+  const min = Number.isFinite(obj.config.minDeltaZ)
+    ? obj.config.minDeltaZ
+    : Number.isFinite(max)
+      ? -max
+      : -Infinity;
+  const upper = Number.isFinite(max) ? max : Infinity;
   let a = angle;
 
-  if (Number.isFinite(max)) {
-    if (a < -max) a = -max;
-    if (a > max) a = max;
-  }
+  if (a < min) a = min;
+  if (a > upper) a = upper;
 
   obj.curAngle = a;
 
@@ -630,7 +651,10 @@ function applyAngleForActive(angle) {
 
   obj.mesh.quaternion.copy(obj.baseQuat).multiply(q);
 
-  if (Number.isFinite(max) && (obj.curAngle === max || obj.curAngle === -max)) {
+  if (
+    (Number.isFinite(min) && obj.curAngle === min) ||
+    (Number.isFinite(upper) && obj.curAngle === upper)
+  ) {
     rotationInertia.velocity = 0;
   }
 }
@@ -749,6 +773,21 @@ function applyGalleryLook() {
         200;
 
     galleryLookSlider.value = String(Math.round(normalized));
+  }
+}
+
+function updateGalleryLookLimits() {
+  const yawLimit = getGalleryYawLimit();
+
+  galleryLook.minYaw = -yawLimit;
+  galleryLook.maxYaw = yawLimit;
+
+  if (galleryLook.yaw < galleryLook.minYaw) {
+    galleryLook.yaw = galleryLook.minYaw;
+  }
+
+  if (galleryLook.yaw > galleryLook.maxYaw) {
+    galleryLook.yaw = galleryLook.maxYaw;
   }
 }
 
@@ -940,6 +979,8 @@ if (infoToggle && infoPanel) {
 }
 
 function onResize() {
+  updateGalleryLookLimits();
+
   if (!camera) return;
 
   const w = container.clientWidth;
@@ -949,6 +990,8 @@ function onResize() {
 
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
+
+  applyGalleryLook();
 }
 
 window.addEventListener("resize", onResize);

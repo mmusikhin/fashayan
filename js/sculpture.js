@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { SCULPTURES } from "./sculptures-data.js";
+import { createLoadingProgress } from "./loading-progress.js";
 
 const viewerEl = document.getElementById("viewer");
 const errEl = document.getElementById("viewer-error");
@@ -9,6 +10,11 @@ const btnBack = document.getElementById("btn-back");
 const preloader = document.getElementById("preloader");
 const preloaderFill = preloader?.querySelector(".preloader-bar-fill");
 const preloaderPerc = document.getElementById("preloader-perc");
+const loadingProgress = createLoadingProgress({
+  preloader,
+  fill: preloaderFill,
+  perc: preloaderPerc,
+});
 
 const maskEl = document.getElementById("focus-mask");
 const infoEl = document.getElementById("sculpture-info");
@@ -16,10 +22,18 @@ const infoToggle = document.getElementById("info-toggle");
 const hintsEl = document.getElementById("view-hints");
 
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
+const isTouchLike = window.matchMedia(
+  "(hover: none) and (pointer: coarse)",
+).matches;
+const isCompactLayout = window.matchMedia(
+  "(max-width: 1024px), (hover: none) and (pointer: coarse)",
+).matches;
 
 function revealOverlayUI() {
-  if (maskEl && !isMobile) maskEl.classList.add("is-visible");
-  if (hintsEl && !isMobile) hintsEl.classList.add("is-visible");
+  if (maskEl && !isCompactLayout) maskEl.classList.add("is-visible");
+  if (hintsEl && !isCompactLayout && !isTouchLike) {
+    hintsEl.classList.add("is-visible");
+  }
 
   if (infoEl) {
     infoEl.style.display = "block";
@@ -28,21 +42,11 @@ function revealOverlayUI() {
 }
 
 function setLoadingProgress(progress) {
-  if (!preloader) return;
-  const clamped = Math.max(0, Math.min(progress, 1));
-  const percent = Math.round(clamped * 100);
-  if (preloaderFill) preloaderFill.style.width = `${percent}%`;
-  if (preloaderPerc) preloaderPerc.textContent = `${percent}%`;
+  loadingProgress.set(progress);
 }
 
 function hidePreloader() {
-  if (!preloader) return;
-  preloader.classList.add("preloader-hidden");
-  setTimeout(() => {
-    if (preloader && preloader.parentNode) {
-      preloader.parentNode.removeChild(preloader);
-    }
-  }, 500);
+  loadingProgress.hide();
 }
 
 setLoadingProgress(0);
@@ -131,6 +135,8 @@ if (!viewerEl) {
 
   const camLight = new THREE.PointLight(0xffffff, 0.9, 0, 2);
   scene.add(camLight);
+  let baseCamLightIntensity = camLight.intensity;
+  let baseExposure = 1;
 
   const spot = new THREE.SpotLight(0xffffff, 0.9, 0, Math.PI / 5, 0.4, 1);
   spot.position.set(0, 7, 5);
@@ -178,11 +184,13 @@ if (!viewerEl) {
 
   function applyLightProfile(profileName) {
     const profile = LIGHT_PROFILES[profileName] || LIGHT_PROFILES.balanced;
-    renderer.toneMappingExposure = profile.exposure;
+    baseExposure = profile.exposure;
+    renderer.toneMappingExposure = baseExposure;
     ambient.intensity = profile.ambient;
     hemi.intensity = profile.hemi;
     key.intensity = profile.key;
     fill.intensity = profile.fill;
+    baseCamLightIntensity = profile.cam;
     camLight.intensity = profile.cam;
     spot.intensity = profile.spot;
   }
@@ -199,8 +207,10 @@ if (!viewerEl) {
   const orbit = {
     target: new THREE.Vector3(0, 0, 0),
     yaw: typeof meta.initialYaw === "number" ? meta.initialYaw : 0,
+    baseYaw: typeof meta.initialYaw === "number" ? meta.initialYaw : 0,
     pitch: typeof meta.initialPitch === "number" ? meta.initialPitch : 0.08,
-    distance: isMobile ? 3.6 : 2.8,
+    distance: isCompactLayout ? 3.6 : 2.8,
+    yawLimit: modelKey === "kitel" ? Math.PI / 4 : Infinity,
     min: 0.2,
     max: 50,
   };
@@ -214,6 +224,8 @@ if (!viewerEl) {
   };
 
   function updateCamera() {
+    clampOrbitYaw();
+
     const safePitch = Math.max(-1.2, Math.min(1.2, orbit.pitch));
     const cosPitch = Math.cos(safePitch);
     const sinPitch = Math.sin(safePitch);
@@ -231,6 +243,41 @@ if (!viewerEl) {
     camera.lookAt(orbit.target);
     camLight.position.copy(camera.position);
     spot.target.position.copy(orbit.target);
+
+    const nearRange = Math.max(orbit.min * 1.8, 0.5);
+    const nearAmount = 1 - THREE.MathUtils.clamp(
+      (orbit.distance - orbit.min) / nearRange,
+      0,
+      1,
+    );
+    const lightDimming =
+      typeof meta.nearLightDimming === "number" ? meta.nearLightDimming : 0;
+    const exposureDimming =
+      typeof meta.nearExposureDimming === "number"
+        ? meta.nearExposureDimming
+        : 0;
+
+    camLight.intensity =
+      baseCamLightIntensity * (1 - nearAmount * lightDimming);
+    renderer.toneMappingExposure =
+      baseExposure * (1 - nearAmount * exposureDimming);
+  }
+
+  function clampOrbitYaw() {
+    if (!Number.isFinite(orbit.yawLimit)) return;
+
+    const minYaw = orbit.baseYaw - orbit.yawLimit;
+    const maxYaw = orbit.baseYaw + orbit.yawLimit;
+
+    if (orbit.yaw < minYaw) {
+      orbit.yaw = minYaw;
+      rotationInertia.velocity = 0;
+    }
+
+    if (orbit.yaw > maxYaw) {
+      orbit.yaw = maxYaw;
+      rotationInertia.velocity = 0;
+    }
   }
 
   function updateInertia() {
@@ -271,7 +318,10 @@ if (!viewerEl) {
       const desktopDistanceMultiplier = 2.4;
 
       orbit.distance = Math.max(
-        radius * (isMobile ? mobileDistanceMultiplier : desktopDistanceMultiplier),
+        radius *
+          (isCompactLayout
+            ? mobileDistanceMultiplier
+            : desktopDistanceMultiplier),
         1.2,
       );
 

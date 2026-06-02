@@ -43,7 +43,9 @@ export const SCULPTURES = {
     lightProfile: "bright",
     initialYaw: 0,
     initialPitch: 0.08,
-    zoomInMultiplier: 0.4,
+    zoomInMultiplier: 0.5,
+    nearLightDimming: 0.72,
+    nearExposureDimming: 0.18,
     description:
       "Бронзовая композиция о памяти и присутствии человека через вещь. " +
       "Китель здесь — не просто форма, а знак службы, дружбы и уважения.",

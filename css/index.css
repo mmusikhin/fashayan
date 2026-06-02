@@ -3,7 +3,7 @@
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
   gap: 40px;
   align-items: center;
-  min-height: calc(100vh - var(--header-height) - 40px);
+  min-height: min(calc(100vh - var(--header-height) - 40px), 680px);
   position: relative;
 }
 
@@ -128,22 +128,21 @@
 
 #three-container {
   position: absolute;
-  top: calc(100vh + 80px);
-  right: -160px;
-  width: min(42vw, 560px);
-  height: 78vh;
+  top: min(calc(100vh + 80px), 980px);
+  right: clamp(-160px, -12vw, -72px);
+  width: clamp(440px, 42vw, 560px);
+  height: min(68vh, 640px);
+  overflow: visible;
   pointer-events: none;
   z-index: 1;
   opacity: 0.95;
 }
 
-@media (max-width: 1024px) {
-  .hero {
-    grid-template-columns: 1fr;
-    min-height: auto;
-    gap: 32px;
-  }
+#three-container canvas {
+  display: block;
+}
 
+@media (max-width: 1024px) {
   .hero-title {
     margin-bottom: 24px;
   }
@@ -162,11 +161,56 @@
   }
 
   #three-container {
-    top: calc(100vh + 120px);
-    right: -80px;
-    width: min(46vw, 460px);
-    height: 64vh;
-    opacity: 0.8;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    transform: none;
+    width: min(760px, 84vw);
+    height: clamp(500px, 62vh, 680px);
+    margin: 48px auto 0;
+    opacity: 0.86;
+    z-index: 2;
+  }
+
+  main > .content-section:nth-of-type(3) {
+    margin-top: 64px;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1024px) {
+  .hero {
+    min-height: auto;
+    align-items: center;
+  }
+
+  .hero-photo-wrap,
+  .hero-photo {
+    min-height: 480px;
+    height: 480px;
+  }
+
+  #three-container {
+    width: min(820px, 88vw);
+    height: clamp(420px, 46vh, 560px);
+    margin-top: -10px;
+  }
+
+  main > .content-section:nth-of-type(3) {
+    margin-top: 36px;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    gap: 32px;
+  }
+
+  #three-container {
+    width: min(720px, 90vw);
+    height: clamp(440px, 56vh, 620px);
   }
 }
 
@@ -221,6 +265,7 @@
     transform: none;
     width: 100%;
     height: 300px;
+    margin: 32px auto 0;
     opacity: 0.6;
     z-index: 1;
   }
