@@ -33,6 +33,49 @@
       </div>
     </div>
 
+    <script>
+      (() => {
+        const preloader = document.getElementById("preloader");
+        const fill = preloader?.querySelector(".preloader-bar-fill");
+        const perc = document.getElementById("preloader-perc");
+
+        if (!preloader || window.__EXHIBITION_PRELOADER__) return;
+
+        let displayed = 0;
+        const maxBeforeModule = 0.82;
+        const startedAt = performance.now();
+
+        function render(value) {
+          displayed = Math.max(
+            displayed,
+            Math.max(0, Math.min(value, maxBeforeModule)),
+          );
+
+          const percent = Math.round(displayed * 100);
+
+          if (fill) fill.style.width = `${percent}%`;
+          if (perc) perc.textContent = `${percent}%`;
+        }
+
+        function tick() {
+          const elapsed = performance.now() - startedAt;
+          render(0.01 + elapsed * 0.000016);
+        }
+
+        const timerId = window.setInterval(tick, 120);
+        render(0.01);
+
+        window.__EXHIBITION_PRELOADER__ = {
+          get value() {
+            return displayed;
+          },
+          stop() {
+            window.clearInterval(timerId);
+          },
+        };
+      })();
+    </script>
+
     <header class="site-header">
       <div class="logo">МУЗЕЙ РОМАНА ФАШАЯНА</div>
       <nav class="main-nav">

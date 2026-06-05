@@ -5,8 +5,26 @@ export function createLoadingProgress({
   maxBeforeComplete = 0.92,
   tickMs = 80,
 } = {}) {
-  let displayed = 0;
-  let realTarget = 0;
+  function readInitialProgress() {
+    const textMatch = perc?.textContent?.match(/(\d+(?:\.\d+)?)\s*%/);
+
+    if (textMatch) {
+      const value = Number(textMatch[1]);
+      if (Number.isFinite(value)) return value / 100;
+    }
+
+    const widthMatch = fill?.style?.width?.match(/(\d+(?:\.\d+)?)\s*%/);
+
+    if (widthMatch) {
+      const value = Number(widthMatch[1]);
+      if (Number.isFinite(value)) return value / 100;
+    }
+
+    return 0;
+  }
+
+  let displayed = Math.max(0, Math.min(readInitialProgress(), maxBeforeComplete));
+  let realTarget = displayed;
   let completed = false;
   let timerId = null;
   const startedAt = performance.now();
@@ -27,7 +45,8 @@ export function createLoadingProgress({
 
     const elapsed = performance.now() - startedAt;
     const simulated = maxBeforeComplete * (1 - Math.exp(-elapsed / 6200));
-    const target = Math.max(realTarget, simulated);
+    const idleTarget = Math.min(maxBeforeComplete, displayed + 0.0012);
+    const target = Math.max(realTarget, simulated, idleTarget);
     const next = displayed + (target - displayed) * 0.24;
 
     render(next);

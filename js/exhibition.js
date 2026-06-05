@@ -21,6 +21,12 @@ const container = document.getElementById("exhibition-container");
 const preloader = document.getElementById("preloader");
 const preloaderPerc = document.getElementById("preloader-perc");
 const preloaderFill = preloader?.querySelector(".preloader-bar-fill");
+const earlyPreloader = window.__EXHIBITION_PRELOADER__;
+
+if (earlyPreloader && typeof earlyPreloader.stop === "function") {
+  earlyPreloader.stop();
+}
+
 const loadingProgress = createLoadingProgress({
   preloader,
   fill: preloaderFill,
@@ -183,6 +189,7 @@ const exhibitionHalls = [
   {
     asset: "../assets/scene.glb",
     switchLabel: "Предыдущий зал",
+    galleryLookDirection: -1,
     sculptures: {
       Man1Mesh: {
         title: "Первый славянин",
@@ -234,6 +241,11 @@ const MIN_LOD_DETAIL_DISTANCE = 1.5;
 let currentHallIndex = 0;
 let isHallLoading = false;
 let hasStartedAnimation = false;
+
+function getGalleryLookDirection() {
+  const direction = exhibitionHalls[currentHallIndex]?.galleryLookDirection;
+  return direction === -1 ? -1 : 1;
+}
 
 let hoveredKey = null;
 let activeKey = null;
@@ -1097,7 +1109,7 @@ function applyGalleryLook() {
 
   const yawQuat = new THREE.Quaternion().setFromAxisAngle(
     new THREE.Vector3(0, 1, 0),
-    galleryLook.yaw,
+    galleryLook.yaw * getGalleryLookDirection(),
   );
 
   camera.position.copy(mainCamPos);
