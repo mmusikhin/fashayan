@@ -1,4 +1,48 @@
 export const SCULPTURES = {
+  jukov: {
+    title: "Жуков",
+    year: "2013",
+    material: "Бронза",
+    lightProfile: "balanced",
+    initialYaw: 0,
+    initialPitch: 0.08,
+    description:
+      "Портрет Маршала Советского Союза, принявшего капитуляцию Германии и Парад Победы 24 июня 1945 года.",
+  },
+
+  konev: {
+    title: "Конев",
+    year: "2013",
+    material: "Бронза",
+    lightProfile: "marshalBright",
+    initialYaw: 0,
+    initialPitch: 0.08,
+    description:
+      "Портрет Маршала Советского Союза, командовавшего 1-м Украинским фронтом в финальных операциях войны.",
+  },
+
+  malinovski: {
+    title: "Малиновский",
+    year: "2013",
+    material: "Бронза",
+    lightProfile: "marshalBright",
+    initialYaw: 0,
+    initialPitch: 0.08,
+    description:
+      "Портрет Маршала Советского Союза, чьи войска участвовали в освобождении Южной Украины и разгроме Квантунской армии.",
+  },
+
+  rokossovskiiy: {
+    title: "Рокоссовский",
+    year: "2013",
+    material: "Бронза",
+    lightProfile: "marshalBright",
+    initialYaw: 0,
+    initialPitch: 0.08,
+    description:
+      "Портрет Маршала Советского Союза, командовавшего Парадом Победы на Красной площади 24 июня 1945 года.",
+  },
+
   turgenev: {
     title: "Тургенев",
     year: "2015",

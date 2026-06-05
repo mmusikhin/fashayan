@@ -11,6 +11,7 @@ const isCompactLayout = window.matchMedia(
 ).matches;
 
 const btnExitExhibition = document.getElementById("btn-exit-exhibition");
+const btnSwitchHall = document.getElementById("btn-switch-hall");
 
 btnExitExhibition?.addEventListener("click", () => {
   window.location.href = "gallery.html";
@@ -119,51 +120,120 @@ const viewZoom = {
   active: false,
 };
 
-const sculpturesConfig = {
-  Man1Mesh: {
-    title: "Первый славянин",
-    text:
-      "Скульптурный образ, обращённый к истокам и становлению человека в мире. Композиция раскрывает момент внутреннего выбора — между действием и осмыслением, создавая образ человека на границе начала истории и культуры.",
-    light: "M1SPL",
-    maxDeltaZ: Infinity,
+const exhibitionHalls = [
+  {
+    asset: "../assets/scene0.glb",
+    cameraName: "Camera",
+    switchLabel: "Следующий зал",
+    ambientLight: {
+      color: 0xffffff,
+      intensity: 1.65,
+    },
+    hemisphereLight: {
+      skyColor: 0xffffff,
+      groundColor: 0x151515,
+      intensity: 2.6,
+    },
+    persistentLights: [
+      {
+        name: "L_FILL",
+        intensity: 900,
+      },
+    ],
+    sculptureDefaults: {
+      focusMode: "camera-forward",
+      focusHeight: 0.58,
+      viewFitMultiplier: 1.55,
+      minViewDistance: 2.15,
+      maxViewDistance: 3.35,
+      zoomMinMultiplier: 0.48,
+      rotationDirection: -1,
+    },
+    sculptures: {
+      JukovLP: {
+        title: "Жуков",
+        text:
+          "Маршал Советского Союза, принявший капитуляцию Германии и Парад Победы 24 июня 1945 года.",
+        lights: ["L_Juk1", "L_Juk2"],
+        maxDeltaZ: Infinity,
+      },
+      KonevLP: {
+        title: "Конев",
+        text:
+          "Маршал Советского Союза, командовавший 1-м Украинским фронтом в финальных операциях войны.",
+        lights: ["L_Kon1", "L_Kon2"],
+        maxDeltaZ: Infinity,
+      },
+      MalinovskiLP: {
+        title: "Малиновский",
+        text:
+          "Маршал Советского Союза, чьи войска сыграли важную роль в освобождении Южной Украины и разгроме Квантунской армии.",
+        lights: ["L_Mal1", "L_Mal2"],
+        maxDeltaZ: Infinity,
+      },
+      RokossovkiiyLP: {
+        title: "Рокоссовский",
+        text:
+          "Маршал Советского Союза, командовавший Парадом Победы на Красной площади 24 июня 1945 года.",
+        lights: ["L_Rok1", "L_Rok2"],
+        maxDeltaZ: Infinity,
+      },
+    },
   },
-  KitelMesh: {
-    title: "Китель друга",
-    text:
-      "Бронзовая композиция о памяти и присутствии человека через вещь. " +
-      "Китель здесь — не просто форма, а знак службы, дружбы и уважения.",
-    light: "KSL",
-    minDeltaZ: -Math.PI / 3,
-    maxDeltaZ: Math.PI / 6,
+  {
+    asset: "../assets/scene.glb",
+    switchLabel: "Предыдущий зал",
+    sculptures: {
+      Man1Mesh: {
+        title: "Первый славянин",
+        text:
+          "Скульптурный образ, обращённый к истокам и становлению человека в мире. Композиция раскрывает момент внутреннего выбора — между действием и осмыслением, создавая образ человека на границе начала истории и культуры.",
+        lights: ["M1SPL"],
+        maxDeltaZ: Infinity,
+      },
+      KitelMesh: {
+        title: "Китель друга",
+        text:
+          "Бронзовая композиция о памяти и присутствии человека через вещь. " +
+          "Китель здесь — не просто форма, а знак службы, дружбы и уважения.",
+        lights: ["KSL"],
+        minDeltaZ: -Math.PI / 3,
+        maxDeltaZ: Math.PI / 6,
+      },
+      Loris: {
+        title: "Лорис-Меликов",
+        text:
+          "Бронзовый портретный образ, построенный на сдержанности и внутренней собранности. " +
+          "Скульптура воспринимается как размышление о государственной ответственности, служении и цене решений.",
+        lights: ["M2SPL"],
+        maxDeltaZ: Infinity,
+      },
+      Children: {
+        title: "Дети войны",
+        text:
+          "Бронзовая работа о хрупкости и стойкости. " +
+          "Композиция обращает внимание на тех, кто вынес войну в детском возрасте.",
+        lights: ["M3SPL"],
+        maxDeltaZ: Infinity,
+      },
+      PressMesh: {
+        title: "Журналистам",
+        text:
+          "Скульптурная композиция, посвящённая профессии свидетеля и посредника. Работа говорит о личной ответственности за слово и о хрупком балансе между фактом, памятью и временем.",
+        lights: ["M0SPL"],
+        maxDeltaZ: Infinity,
+      },
+    },
   },
-  Loris: {
-    title: "Лорис-Меликов",
-    text:
-      "Бронзовый портретный образ, построенный на сдержанности и внутренней собранности. " +
-      "Скульптура воспринимается как размышление о государственной ответственности, служении и цене решений.",
-    light: "M2SPL",
-    maxDeltaZ: Infinity,
-  },
-  Children: {
-    title: "Дети войны",
-    text:
-      "Бронзовая работа о хрупкости и стойкости. " +
-      "Композиция обращает внимание на тех, кто вынес войну в детском возрасте.",
-    light: "M3SPL",
-    maxDeltaZ: Infinity,
-  },
-  PressMesh: {
-    title: "Журналистам",
-    text:
-      "Скульптурная композиция, посвящённая профессии свидетеля и посредника. Работа говорит о личной ответственности за слово и о хрупком балансе между фактом, памятью и временем.",
-    light: "M0SPL",
-    maxDeltaZ: Infinity,
-  },
-};
+];
 
 const sculptures = {};
 
 const MIN_LOD_DETAIL_DISTANCE = 1.5;
+
+let currentHallIndex = 0;
+let isHallLoading = false;
+let hasStartedAnimation = false;
 
 let hoveredKey = null;
 let activeKey = null;
@@ -210,76 +280,261 @@ manager.onLoad = () => {
   loadingProgress.set(0.96);
 };
 
-loader.load(
-  "../assets/scene.glb",
-  (gltf) => {
-    scene = gltf.scene;
+function getNextHallIndex() {
+  return (currentHallIndex + 1) % exhibitionHalls.length;
+}
 
-    let gltfCam = scene.getObjectByName("MainCamera");
+function updateHallSwitchButton() {
+  if (!btnSwitchHall) return;
 
-    if (
-      !(gltfCam && gltfCam.isCamera) &&
-      gltf.cameras &&
-      gltf.cameras.length > 0
-    ) {
-      gltfCam = gltf.cameras[0];
-      if (!scene.children.includes(gltfCam)) scene.add(gltfCam);
+  btnSwitchHall.disabled = isHallLoading || exhibitionHalls.length < 2;
+  btnSwitchHall.textContent = isHallLoading
+    ? "Загрузка..."
+    : exhibitionHalls[currentHallIndex].switchLabel;
+}
+
+function clearSculptures() {
+  Object.keys(sculptures).forEach((key) => {
+    delete sculptures[key];
+  });
+}
+
+function disposeMaterial(material) {
+  Object.values(material).forEach((value) => {
+    if (value && value.isTexture) value.dispose();
+  });
+
+  material.dispose();
+}
+
+function disposeScene(root) {
+  root.traverse((obj) => {
+    if (obj.geometry) obj.geometry.dispose();
+
+    if (Array.isArray(obj.material)) {
+      obj.material.forEach(disposeMaterial);
+    } else if (obj.material) {
+      disposeMaterial(obj.material);
     }
+  });
+}
 
-    if (gltfCam && gltfCam.isCamera) {
-      camera = gltfCam;
-    } else {
-      camera = new THREE.PerspectiveCamera(
-        50,
-        container.clientWidth / container.clientHeight,
-        0.1,
-        1000,
-      );
-      camera.position.set(0, 2, 5);
-      camera.lookAt(0, 1, 0);
-      scene.add(camera);
-    }
+function resetInteractionState() {
+  hoveredKey = null;
+  activeKey = null;
+  isViewMode = false;
+  isDragging = false;
 
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
+  galleryLook.active = false;
+  touchView.mode = null;
+  camAnim.active = false;
+  camAnim.onComplete = null;
+  rotationAnim.active = false;
+  rotationAnim.key = null;
+  rotationInertia.velocity = 0;
+  viewZoom.active = false;
 
-    mainCamPos.copy(camera.position);
-    mainCamQuat.copy(camera.quaternion);
+  document.body.classList.remove("view-mode");
+  hoverHint.style.display = "none";
+  setViewUI(false);
 
-    galleryLook.baseQuat.copy(camera.quaternion);
+  if (infoPanel) {
+    infoPanel.style.display = "none";
+    infoPanel.classList.remove("is-open");
+  }
+}
 
-    Object.keys(sculpturesConfig).forEach((key) => {
-      const lodData = createSculptureLod(scene, key);
-      if (!lodData) return;
+function getLightNames(cfg) {
+  if (Array.isArray(cfg.lights)) return cfg.lights;
+  if (cfg.light) return [cfg.light];
+  return [];
+}
 
-      const cfg = sculpturesConfig[key];
-      const light = cfg.light ? scene.getObjectByName(cfg.light) : null;
-      const lightDefaultIntensity =
-        light && typeof light.intensity === "number" ? light.intensity : 1;
+function setSculptureLights(obj, isOn) {
+  if (!obj || !obj.lights) return;
 
-      if (light) light.intensity = 0;
+  obj.lights.forEach((light, index) => {
+    light.intensity = isOn ? obj.lightDefaultIntensities[index] : 0;
+  });
+}
 
-      sculptures[key] = {
-        ...lodData,
-        light,
-        lightDefaultIntensity,
-        baseQuat: lodData.mesh.quaternion.clone(),
-        curAngle: 0,
-        config: cfg,
-      };
+function clearAllSculptureLights() {
+  Object.values(sculptures).forEach((obj) => {
+    setSculptureLights(obj, false);
+  });
+}
 
-      setSculptureDetail(sculptures[key], "low");
+function setupCamera(gltf, root, hall) {
+  const cameraNames = [hall.cameraName, "MainCamera", "Camera"].filter(Boolean);
+  let gltfCam = null;
+
+  for (const name of cameraNames) {
+    gltfCam = root.getObjectByName(name);
+    if (gltfCam && gltfCam.isCamera) break;
+  }
+
+  if (
+    !(gltfCam && gltfCam.isCamera) &&
+    gltf.cameras &&
+    gltf.cameras.length > 0
+  ) {
+    gltfCam = gltf.cameras[0];
+    if (!gltfCam.parent) root.add(gltfCam);
+  }
+
+  const nextCamera =
+    gltfCam && gltfCam.isCamera
+      ? gltfCam
+      : new THREE.PerspectiveCamera(
+          50,
+          container.clientWidth / container.clientHeight,
+          0.1,
+          1000,
+        );
+
+  if (!nextCamera.parent) {
+    nextCamera.position.set(0, 2, 5);
+    nextCamera.lookAt(0, 1, 0);
+    root.add(nextCamera);
+  }
+
+  nextCamera.aspect = container.clientWidth / container.clientHeight;
+  nextCamera.updateProjectionMatrix();
+
+  return nextCamera;
+}
+
+function setupHallLighting(root, hall) {
+  if (hall.ambientLight) {
+    const ambient = new THREE.AmbientLight(
+      hall.ambientLight.color ?? 0xffffff,
+      hall.ambientLight.intensity ?? 0,
+    );
+
+    ambient.name = "hall_ambient_light";
+    root.add(ambient);
+  }
+
+  if (hall.hemisphereLight) {
+    const hemi = new THREE.HemisphereLight(
+      hall.hemisphereLight.skyColor ?? 0xffffff,
+      hall.hemisphereLight.groundColor ?? 0x111111,
+      hall.hemisphereLight.intensity ?? 0,
+    );
+
+    hemi.name = "hall_hemisphere_light";
+    root.add(hemi);
+  }
+
+  (hall.persistentLights || []).forEach((cfg) => {
+    const light = root.getObjectByName(cfg.name);
+
+    if (!light) return;
+
+    if (typeof cfg.intensity === "number") light.intensity = cfg.intensity;
+    if (typeof cfg.distance === "number") light.distance = cfg.distance;
+    if (typeof cfg.decay === "number") light.decay = cfg.decay;
+  });
+}
+
+function setupSculptures(root, hall) {
+  Object.keys(hall.sculptures).forEach((key) => {
+    const lodData = createSculptureLod(root, key);
+    if (!lodData) return;
+
+    const cfg = {
+      ...(hall.sculptureDefaults || {}),
+      ...hall.sculptures[key],
+    };
+    const lights = getLightNames(cfg)
+      .map((name) => root.getObjectByName(name))
+      .filter(Boolean);
+    const lightDefaultIntensities = lights.map((light) =>
+      typeof light.intensity === "number" ? light.intensity : 1,
+    );
+
+    lights.forEach((light) => {
+      light.intensity = 0;
     });
 
-    animate();
-    requestAnimationFrame(() => loadingProgress.hide());
-  },
-  undefined,
-  (err) => {
-    console.error("GLB load error", err);
-    loadingProgress.hide();
-  },
-);
+    sculptures[key] = {
+      ...lodData,
+      lights,
+      lightDefaultIntensities,
+      baseQuat: lodData.mesh.quaternion.clone(),
+      curAngle: 0,
+      config: cfg,
+    };
+
+    setSculptureDetail(sculptures[key], "low");
+  });
+}
+
+function startRenderLoop() {
+  if (hasStartedAnimation) return;
+
+  hasStartedAnimation = true;
+  animate();
+}
+
+function loadHall(hallIndex) {
+  const hall = exhibitionHalls[hallIndex];
+
+  if (!hall || isHallLoading) return;
+
+  isHallLoading = true;
+  updateHallSwitchButton();
+  resetInteractionState();
+  clearAllSculptureLights();
+
+  loader.load(
+    hall.asset,
+    (gltf) => {
+      const previousScene = scene;
+      const nextScene = gltf.scene;
+      const nextCamera = setupCamera(gltf, nextScene, hall);
+
+      scene = nextScene;
+      camera = nextCamera;
+      currentHallIndex = hallIndex;
+
+      if (previousScene) disposeScene(previousScene);
+
+      clearSculptures();
+
+      mainCamPos.copy(camera.position);
+      mainCamQuat.copy(camera.quaternion);
+
+      galleryLook.yaw = 0;
+      updateGalleryLookLimits();
+      galleryLook.baseQuat.copy(camera.quaternion);
+
+      setupHallLighting(scene, hall);
+      setupSculptures(scene, hall);
+      applyGalleryLook();
+
+      isHallLoading = false;
+      updateHallSwitchButton();
+      startRenderLoop();
+
+      requestAnimationFrame(() => loadingProgress.hide());
+    },
+    undefined,
+    (err) => {
+      console.error("GLB load error", err);
+      isHallLoading = false;
+      updateHallSwitchButton();
+      loadingProgress.hide();
+    },
+  );
+}
+
+btnSwitchHall?.addEventListener("click", () => {
+  loadHall(getNextHallIndex());
+});
+
+updateHallSwitchButton();
+loadHall(currentHallIndex);
 
 function createSculptureLod(root, key) {
   const high = root.getObjectByName(key);
@@ -383,6 +638,72 @@ function getSculptureWorldAnchor(key) {
   box.getCenter(center);
 
   return center;
+}
+
+function getSculptureFocusBounds(obj) {
+  const target = obj.config.focusMode === "camera-forward" ? obj.high : obj.mesh;
+  const box = new THREE.Box3().setFromObject(target || obj.mesh);
+
+  if (box.isEmpty()) {
+    box.setFromObject(obj.mesh);
+  }
+
+  const center = new THREE.Vector3();
+  const size = new THREE.Vector3();
+
+  box.getCenter(center);
+  box.getSize(size);
+
+  return { box, center, size };
+}
+
+function getViewDistance(obj, size, radius) {
+  if (obj.config.focusMode !== "camera-forward") {
+    return radius * (isCompactLayout ? 2.8 : 2.0);
+  }
+
+  const maxDimension = Math.max(size.x, size.y, size.z, 0.1);
+  const fov = THREE.MathUtils.degToRad(camera.fov || 50);
+  const fitDistance =
+    (maxDimension / (2 * Math.tan(fov / 2))) *
+    (obj.config.viewFitMultiplier || 1.55);
+
+  const minDistance =
+    typeof obj.config.minViewDistance === "number"
+      ? obj.config.minViewDistance
+      : 0.12;
+  const maxDistance =
+    typeof obj.config.maxViewDistance === "number"
+      ? obj.config.maxViewDistance
+      : Infinity;
+
+  return Math.min(Math.max(fitDistance, minDistance), maxDistance);
+}
+
+function getFocusPoint(obj, box, center, size) {
+  if (typeof obj.config.focusHeight !== "number") return center;
+
+  const focus = center.clone();
+
+  focus.y = box.min.y + size.y * obj.config.focusHeight;
+
+  return focus;
+}
+
+function worldPointToCameraLocal(point) {
+  if (!camera || !camera.parent) return point.clone();
+
+  return camera.parent.worldToLocal(point.clone());
+}
+
+function worldDirectionToCameraLocal(dir) {
+  if (!camera || !camera.parent) return dir.clone().normalize();
+
+  const worldOrigin = camera.getWorldPosition(new THREE.Vector3());
+  const localOrigin = worldPointToCameraLocal(worldOrigin);
+  const localEnd = worldPointToCameraLocal(worldOrigin.clone().add(dir));
+
+  return localEnd.sub(localOrigin).normalize();
 }
 
 function getTouchDistance(touches) {
@@ -489,9 +810,7 @@ function setHover(key) {
   hoveredKey = key;
 
   Object.entries(sculptures).forEach(([name, obj]) => {
-    if (obj.light) {
-      obj.light.intensity = name === key ? obj.lightDefaultIntensity : 0;
-    }
+    setSculptureLights(obj, name === key);
   });
 
   if (!key || !camera || !scene) {
@@ -554,31 +873,45 @@ function enterViewMode(key) {
 
   rotationInertia.velocity = 0;
 
-  const box = new THREE.Box3().setFromObject(obj.mesh);
-  const center = new THREE.Vector3();
-  const size = new THREE.Vector3();
-
-  box.getCenter(center);
-  box.getSize(size);
+  const { box, center, size } = getSculptureFocusBounds(obj);
+  const focusPoint = worldPointToCameraLocal(
+    getFocusPoint(obj, box, center, size),
+  );
 
   const radius = size.length() || 1;
-  const dir = new THREE.Vector3().subVectors(camera.position, center).normalize();
-  const distanceMultiplier = isCompactLayout ? 2.8 : 2.0;
-  const targetPos = center
-    .clone()
-    .add(dir.multiplyScalar(radius * distanceMultiplier));
+  const distance = getViewDistance(obj, size, radius);
+  const dir =
+    obj.config.focusMode === "camera-forward"
+      ? worldDirectionToCameraLocal(
+          camera.getWorldDirection(new THREE.Vector3()),
+        )
+      : new THREE.Vector3().subVectors(camera.position, focusPoint).normalize();
+
+  if (dir.lengthSq() === 0) {
+    dir.set(0, 0, -1);
+  }
+
+  const targetPos =
+    obj.config.focusMode === "camera-forward"
+      ? focusPoint.clone().addScaledVector(dir, -distance)
+      : focusPoint.clone().add(dir.multiplyScalar(distance));
 
   const m = new THREE.Matrix4();
-  m.lookAt(targetPos, center, camera.up);
+  m.lookAt(targetPos, focusPoint, camera.up);
 
   const targetQuat = new THREE.Quaternion().setFromRotationMatrix(m);
 
-  viewZoom.target.copy(center);
+  viewZoom.target.copy(focusPoint);
   viewZoom.dir.copy(
-    new THREE.Vector3().subVectors(targetPos, center).normalize(),
+    new THREE.Vector3().subVectors(targetPos, focusPoint).normalize(),
   );
-  viewZoom.distance = targetPos.distanceTo(center);
-  viewZoom.min = Math.max(radius * (isCompactLayout ? 0.55 : 0.3), 0.12);
+  viewZoom.distance = targetPos.distanceTo(focusPoint);
+  viewZoom.min = Math.max(
+    radius *
+      (obj.config.zoomMinMultiplier ||
+        (isCompactLayout ? 0.55 : 0.3)),
+    0.12,
+  );
   viewZoom.max = Math.max(radius * 6.0, viewZoom.distance * 2.5);
   viewZoom.active = true;
 
@@ -609,9 +942,7 @@ function exitViewMode() {
 
   viewZoom.active = false;
 
-  Object.values(sculptures).forEach((obj) => {
-    if (obj.light) obj.light.intensity = 0;
-  });
+  clearAllSculptureLights();
 
   rotationInertia.velocity = 0;
 
@@ -664,11 +995,18 @@ function rotateActiveByDrag(dx) {
 
   rotationAnim.active = false;
 
-  const deltaAngle = dx * (isMobile ? 0.018 : 0.01);
+  const obj = sculptures[activeKey];
+  if (!obj) return;
 
-  applyAngleForActive(sculptures[activeKey].curAngle + deltaAngle);
+  const direction =
+    typeof obj.config.rotationDirection === "number"
+      ? obj.config.rotationDirection
+      : 1;
+  const deltaAngle = dx * (isMobile ? 0.018 : 0.01) * direction;
 
-  rotationInertia.velocity = dx * rotationInertia.velocityScale;
+  applyAngleForActive(obj.curAngle + deltaAngle);
+
+  rotationInertia.velocity = dx * rotationInertia.velocityScale * direction;
 }
 
 function updateInertia() {
@@ -767,10 +1105,10 @@ function applyGalleryLook() {
 
   if (galleryLookSlider) {
     const normalized =
-      100 -
       ((galleryLook.yaw - galleryLook.minYaw) /
         (galleryLook.maxYaw - galleryLook.minYaw)) *
-        200;
+        200 -
+      100;
 
     galleryLookSlider.value = String(Math.round(normalized));
   }
@@ -804,7 +1142,7 @@ if (galleryLookSlider) {
 
     galleryLook.yaw =
       galleryLook.minYaw +
-      ((100 - value) / 200) * (galleryLook.maxYaw - galleryLook.minYaw);
+      ((value + 100) / 200) * (galleryLook.maxYaw - galleryLook.minYaw);
 
     applyGalleryLook();
   });

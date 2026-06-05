@@ -75,6 +75,15 @@
   transform: scale(1.06);
 }
 
+.work-card--marshal .work-thumb img {
+  width: 112%;
+  max-height: 182px;
+}
+
+.work-card--marshal:hover .work-thumb img {
+  transform: scale(1.1);
+}
+
 .work-meta {
   padding: 14px 16px 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -133,6 +142,11 @@
   .work-thumb img {
     max-height: 140px;
     width: 90%;
+  }
+
+  .work-card--marshal .work-thumb img {
+    width: 104%;
+    max-height: 168px;
   }
 
   .page-gallery .exhibition-hero {

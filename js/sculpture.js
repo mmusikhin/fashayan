@@ -171,6 +171,15 @@ if (!viewerEl) {
       cam: 0.6,
       spot: 0.5,
     },
+    marshalBright: {
+      exposure: 2.9,
+      ambient: 1.8,
+      hemi: 5.4,
+      key: 3.00,
+      fill: 1.85,
+      cam: 1.35,
+      spot: 1.65,
+    },
     white: {
       exposure: 0.9,
       ambient: 0.08,

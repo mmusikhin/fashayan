@@ -18,6 +18,11 @@
   z-index: 1;
 }
 
+.page-exhibition .preloader-title {
+  line-height: 1.2;
+  text-align: center;
+}
+
 .focus-mask {
   position: fixed;
   top: var(--header-height);
@@ -71,6 +76,23 @@
 #btn-exit-exhibition:hover {
   background-color: #ffffff;
   color: #000000;
+}
+
+#btn-switch-hall {
+  position: fixed;
+  top: 90px;
+  right: 40px;
+  z-index: 200;
+  min-width: 160px;
+}
+
+#btn-switch-hall:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+body.view-mode #btn-switch-hall {
+  display: none;
 }
 
 #sculpture-info {
@@ -216,6 +238,14 @@ body.view-mode #btn-exit-view {
     padding: 10px 18px;
   }
 
+  #btn-switch-hall {
+    top: 80px;
+    right: 16px;
+    min-width: 136px;
+    font-size: 14px;
+    padding: 10px 18px;
+  }
+
   .focus-mask {
     display: none;
   }
@@ -344,6 +374,10 @@ body.view-mode #btn-exit-view {
     left: 24px;
   }
 
+  #btn-switch-hall {
+    right: 24px;
+  }
+
   #sculpture-info,
   .mobile-gallery-controls {
     left: 50%;
@@ -361,5 +395,20 @@ body.view-mode #btn-exit-view {
   .info-toggle::after {
     float: none;
     margin-left: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .page-exhibition .preloader-title {
+    font-size: 20px;
+    letter-spacing: 0.04em;
+    white-space: normal;
+  }
+
+  #btn-switch-hall {
+    top: 128px;
+    left: 16px;
+    right: auto;
+    min-width: 0;
   }
 }
