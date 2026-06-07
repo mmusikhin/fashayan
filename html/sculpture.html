@@ -88,6 +88,13 @@
       </div>
     </div>
 
+    <script>
+      document.getElementById("btn-back").addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        window.history.back();
+      }, true);
+    </script>
     <script type="module" src="../js/sculpture.js"></script>
   </body>
 </html>

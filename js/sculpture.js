@@ -5,7 +5,6 @@ import { createLoadingProgress } from "./loading-progress.js";
 
 const viewerEl = document.getElementById("viewer");
 const errEl = document.getElementById("viewer-error");
-const btnBack = document.getElementById("btn-back");
 
 const preloader = document.getElementById("preloader");
 const preloaderFill = preloader?.querySelector(".preloader-bar-fill");
@@ -50,12 +49,6 @@ function hidePreloader() {
 }
 
 setLoadingProgress(0);
-
-if (btnBack) {
-  btnBack.addEventListener("click", () => {
-    window.location.href = "gallery.html";
-  });
-}
 
 if (infoToggle && infoEl) {
   infoToggle.addEventListener("click", () => {
