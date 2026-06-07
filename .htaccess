@@ -1,0 +1,22 @@
+Options -MultiViews
+RewriteEngine On
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html[?\s]
+RewriteRule ^index\.html$ /%1 [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?html/gallery\.html[?\s]
+RewriteRule ^html/gallery\.html$ /%1gallery [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?html/sculptor\.html[?\s]
+RewriteRule ^html/sculptor\.html$ /%1biography [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?html/exhibition\.html[?\s]
+RewriteRule ^html/exhibition\.html$ /%1exhibition [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+(.*/)?html/sculpture\.html[?\s]
+RewriteRule ^html/sculpture\.html$ /%1sculpture [R=301,L]
+
+RewriteRule ^gallery/?$ html/gallery.html [L]
+RewriteRule ^biography/?$ html/sculptor.html [L]
+RewriteRule ^exhibition/?$ html/exhibition.html [L]
+RewriteRule ^sculpture/?$ html/sculpture.html [L]

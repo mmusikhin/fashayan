@@ -84,7 +84,7 @@ if (titleEl) titleEl.textContent = meta.title;
 if (subEl) subEl.textContent = `${meta.year} • ${meta.material} • 3D`;
 if (textEl) textEl.textContent = meta.description || DEFAULT_DESCRIPTION;
 
-const glbPath = `../assets/${modelKey}.glb`;
+const glbPath = `assets/${modelKey}.glb`;
 
 if (!viewerEl) {
   console.error("[sculpture] #viewer не найден");

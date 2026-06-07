@@ -14,7 +14,7 @@ const btnExitExhibition = document.getElementById("btn-exit-exhibition");
 const btnSwitchHall = document.getElementById("btn-switch-hall");
 
 btnExitExhibition?.addEventListener("click", () => {
-  window.location.href = "gallery.html";
+  window.location.href = "gallery";
 });
 
 const container = document.getElementById("exhibition-container");
@@ -128,7 +128,7 @@ const viewZoom = {
 
 const exhibitionHalls = [
   {
-    asset: "../assets/scene0.glb",
+    asset: "assets/scene0.glb",
     cameraName: "Camera",
     switchLabel: "Следующий зал",
     ambientLight: {
@@ -187,7 +187,7 @@ const exhibitionHalls = [
     },
   },
   {
-    asset: "../assets/scene.glb",
+    asset: "assets/scene.glb",
     switchLabel: "Предыдущий зал",
     galleryLookDirection: -1,
     sculptures: {

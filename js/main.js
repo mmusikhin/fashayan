@@ -129,14 +129,14 @@ function init() {
   if (btn3d)
     btn3d.addEventListener(
       "click",
-      () => (window.location.href = "html/gallery.html"),
+      () => (window.location.href = "gallery"),
     );
 
   const btnMore = document.getElementById("btn-more-sculptor");
   if (btnMore)
     btnMore.addEventListener(
       "click",
-      () => (window.location.href = "html/sculptor.html"),
+      () => (window.location.href = "biography"),
     );
 }
 
