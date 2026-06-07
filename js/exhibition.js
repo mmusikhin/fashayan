@@ -14,7 +14,7 @@ const btnExitExhibition = document.getElementById("btn-exit-exhibition");
 const btnSwitchHall = document.getElementById("btn-switch-hall");
 
 btnExitExhibition?.addEventListener("click", () => {
-  window.location.href = "gallery";
+  window.location.href = "../gallery";
 });
 
 const container = document.getElementById("exhibition-container");
