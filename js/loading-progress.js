@@ -2,7 +2,7 @@ export function createLoadingProgress({
   preloader,
   fill,
   perc,
-  maxBeforeComplete = 0.92,
+  maxBeforeComplete = 0.99,
   tickMs = 80,
 } = {}) {
   function readInitialProgress() {
